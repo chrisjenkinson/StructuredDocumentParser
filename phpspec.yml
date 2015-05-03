@@ -2,3 +2,12 @@ suites:
   sdp_suite:
     namespace: chrisjenkinson\StructuredDocumentParser
     psr4_prefix: chrisjenkinson\StructuredDocumentParser
+
+extensions:
+  - PhpSpec\Extension\CodeCoverageExtension
+
+formatter.name: pretty
+
+code_coverage:
+  format: clover
+  output: coverage.xml

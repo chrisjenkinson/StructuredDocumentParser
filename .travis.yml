@@ -11,8 +11,11 @@ matrix:
     - php: 7.0
 
 before_script:
-  - composer self-update
-  - composer install --prefer-source
+  - travis_retry composer install --no-interaction --prefer-source
 
 script:
-  - vendor/bin/phpspec run --format=pretty
+  - bin/phpspec run
+
+after_script:
+  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; wget https://scrutinizer-ci.com/ocular.phar; fi;'
+  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.xml; fi;'

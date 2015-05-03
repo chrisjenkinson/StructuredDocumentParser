@@ -3,7 +3,8 @@
   "description": "A structured document parser.",
   "type": "library",
   "require-dev": {
-    "phpspec/phpspec": "^2.2"
+    "phpspec/phpspec": "^2.2",
+    "henrikbjorn/phpspec-code-coverage": "^1.0"
   },
   "license": "MIT",
   "authors": [
@@ -17,5 +18,8 @@
     "psr-4": {
       "chrisjenkinson\\StructuredDocumentParser\\": "src"
     }
+  },
+  "config": {
+    "bin-dir": "bin"
   }
 }
