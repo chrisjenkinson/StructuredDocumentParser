@@ -1,0 +1,22 @@
+{
+  "name": "chrisjenkinson/structured-document-parser",
+  "description": "A structured document parser.",
+  "type": "library",
+  "require-dev": {
+    "phpspec/phpspec": "^2.2"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Chris Jenkinson",
+      "email": "chris@chrisjenkinson.org"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "chrisjenkinson\\StructuredDocumentParser\\": "src"
+    }
+  }
+}
