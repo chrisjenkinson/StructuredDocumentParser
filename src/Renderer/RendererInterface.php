@@ -2,8 +2,8 @@
 
 namespace chrisjenkinson\StructuredDocumentParser\Renderer;
 
-use chrisjenkinson\StructuredDocumentParser\Visitor\Visitor;
+use chrisjenkinson\StructuredDocumentParser\Visitor\VisitorInterface;
 
-interface RendererInterface extends Visitor
+interface RendererInterface extends VisitorInterface
 {
 }

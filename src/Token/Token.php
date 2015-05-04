@@ -19,23 +19,9 @@ class Token implements TokenInterface
         $this->value = $value;
     }
 
-    public function getType()
-    {
-        return $this->type;
-    }
-
     public function getValues()
     {
         return $this->value;
-    }
-
-    public function getValue($index)
-    {
-        if (!array_key_exists($index, $this->value)) {
-            throw new \RuntimeException(sprintf('No such index %s exists', $index));
-        }
-
-        return $this->value[$index];
     }
 
     public function getPosition()
@@ -56,5 +42,19 @@ class Token implements TokenInterface
     public function __toString()
     {
         return sprintf("%s (%s)", $this->getType(), trim($this->getValue('all')));
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function getValue($index)
+    {
+        if (!array_key_exists($index, $this->value)) {
+            throw new \RuntimeException(sprintf('No such index %s exists', $index));
+        }
+
+        return $this->value[$index];
     }
 }

@@ -28,24 +28,24 @@ class Lexer
     public function tokenise($text)
     {
         $tokens = new TokenStream;
+        $cursor = new Cursor($text);
 
-        $currentIndex = 0;
-        $textLength = strlen($text);
-
-        while ($currentIndex < $textLength) {
-            $token = $this->findMatchingToken(substr($text, $currentIndex));
+        while (!$cursor->isEndOfText()) {
+            $token = $this->findMatchingToken($cursor->getRemainingText());
 
             if (!$token) {
-                //return $tokens;
-
                 throw new \RuntimeException(
-                    sprintf('No token found at index: %d, text: %s', $currentIndex, substr($text, $currentIndex))
+                    sprintf(
+                        'No token found at index: %d, text: %s',
+                        $cursor->getCurrentPosition(),
+                        $cursor->getRemainingText()
+                    )
                 );
             }
 
             $tokens->add($token);
 
-            $currentIndex += strlen($token->getValue('all'));
+            $cursor->advance(strlen($token->getValue('all')));
         }
 
         return $tokens;
@@ -53,54 +53,55 @@ class Lexer
 
     /**
      * @param string $text
-     * @return bool|Token
+     * @return Token|false
      */
     public function findMatchingToken($text)
     {
-        $matchedTokens = [];
-        $matchers = [];
-
-        foreach ($this->matchers as $matcher) {
-            if ($matches = $matcher->match($text)) {
-                $matchedTokens[] = $matches;
-                $matchers[] = $matcher;
-            }
-        }
+        list($matchedTokens, $calledMatchers) = $this->runMatchers($text);
 
         if (1 < count($matchedTokens)) {
             throw new \RuntimeException(
                 sprintf(
                     'Ambiguous token found in text %s with matchers %s, matches: %s',
                     $text,
-                    implode(
-                        ', ',
-                        array_map(
-                            function ($matcher) {
-                                return $this->getMatcherName($matcher);
-                            },
-                            $matchers
-                        )
-                    ),
+                    implode(', ', $calledMatchers),
                     var_export($matchedTokens, true)
                 )
             );
         }
 
         if (1 === count($matchedTokens)) {
-            return new Token($this->getMatcherName($matchers[0]), $matchedTokens[0]);
+            return new Token($calledMatchers[0], $matchedTokens[0]);
         }
 
         return false;
     }
 
     /**
+     * @param $text
+     * @return array
+     */
+    public function runMatchers($text)
+    {
+        $matchedTokens = [];
+        $calledMatchers = [];
+
+        foreach ($this->matchers as $matcher) {
+            if ($matches = $matcher->match($text)) {
+                $matchedTokens[] = $matches;
+                $calledMatchers[] = $this->getMatcherName($matcher);
+            }
+        }
+
+        return [$matchedTokens, $calledMatchers];
+    }
+
+    /**
      * @param MatcherInterface $matcher
      * @return string
      */
-    public
-    function getMatcherName(
-        MatcherInterface $matcher
-    ) {
+    public function getMatcherName(MatcherInterface $matcher)
+    {
         return substr((new \ReflectionClass($matcher))->getShortName(), 0, -7);
     }
 }

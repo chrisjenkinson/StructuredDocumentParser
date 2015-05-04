@@ -28,14 +28,6 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * @return array
-     */
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
-
-    /**
      * @param $key
      * @return NodeInterface
      */
@@ -84,5 +76,13 @@ abstract class AbstractNode implements NodeInterface
         $string .= ")";
 
         return $string;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
     }
 }

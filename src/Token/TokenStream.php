@@ -17,18 +17,6 @@ class TokenStream implements \Countable
     }
 
     /**
-     * @return null|TokenInterface
-     */
-    public function getCurrentToken()
-    {
-        if (0 === count($this->tokens)) {
-            return null;
-        }
-
-        return $this->tokens[0];
-    }
-
-    /**
      * @param int $distance
      * @return null|TokenInterface
      */
@@ -51,6 +39,18 @@ class TokenStream implements \Countable
         }
 
         return array_shift($this->tokens);
+    }
+
+    /**
+     * @return null|TokenInterface
+     */
+    public function getCurrentToken()
+    {
+        if (0 === count($this->tokens)) {
+            return null;
+        }
+
+        return $this->tokens[0];
     }
 
     /**
