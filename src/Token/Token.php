@@ -15,7 +15,7 @@ class Token implements TokenInterface
 
     public function __construct($type, $value)
     {
-        $this->type = $type;
+        $this->type  = $type;
         $this->value = $value;
     }
 

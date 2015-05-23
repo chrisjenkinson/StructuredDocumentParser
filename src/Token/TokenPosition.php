@@ -20,7 +20,7 @@ class TokenPosition
      */
     public function __construct($line, $column)
     {
-        $this->line = $line;
+        $this->line   = $line;
         $this->column = $column;
     }
 

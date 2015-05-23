@@ -21,9 +21,9 @@ class Cursor
 
     public function __construct($text)
     {
-        $this->text = $text;
+        $this->text            = $text;
         $this->currentPosition = 0;
-        $this->textLength = strlen($text);
+        $this->textLength      = strlen($text);
     }
 
     /**

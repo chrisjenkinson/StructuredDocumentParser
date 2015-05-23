@@ -83,12 +83,12 @@ class Lexer
      */
     public function runMatchers($text)
     {
-        $matchedTokens = [];
+        $matchedTokens  = [];
         $calledMatchers = [];
 
         foreach ($this->matchers as $matcher) {
             if ($matches = $matcher->match($text)) {
-                $matchedTokens[] = $matches;
+                $matchedTokens[]  = $matches;
                 $calledMatchers[] = $this->getMatcherName($matcher);
             }
         }
