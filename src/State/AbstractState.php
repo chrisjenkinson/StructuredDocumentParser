@@ -17,10 +17,11 @@ class AbstractState implements StateInterface
 
     /**
      * @param MatcherInterface $matcher
+     * @param callable         $callback
      */
-    public function registerMatcher(MatcherInterface $matcher)
+    public function registerMatcher(MatcherInterface $matcher, callable $callback = null)
     {
-        $this->matchers[] = $matcher;
+        $this->matchers[] = [$matcher, $callback];
     }
 
     /**
@@ -33,7 +34,7 @@ class AbstractState implements StateInterface
     {
         $text = $cursor->getRemainingText();
 
-        list($matchedTokens, $calledMatchers) = $this->runMatchers($text);
+        list($matchedTokens, $calledMatchers, $callback) = $this->runMatchers($text);
 
         if (1 < count($matchedTokens)) {
             throw new \RuntimeException(
@@ -58,7 +59,11 @@ class AbstractState implements StateInterface
             );
         }
 
-        return new Token($calledMatchers[0], $matchedTokens[0]);
+        if (is_callable($callback)) {
+            $callback($lexer);
+        }
+
+        return new Token(substr($calledMatchers[0], 0, -7), $matchedTokens[0]);
     }
 
     /**
@@ -70,15 +75,17 @@ class AbstractState implements StateInterface
     {
         $matchedTokens  = [];
         $calledMatchers = [];
+        $callback = null;
 
         foreach ($this->matchers as $matcher) {
-            if ($matches = $matcher->match($text)) {
+            if ($matches = $matcher[0]->match($text)) {
                 $matchedTokens[]  = $matches;
-                $calledMatchers[] = $matcher->getName();
+                $calledMatchers[] = $matcher[0]->getName();
+                $callback = $matcher[1];
             }
         }
 
-        return [$matchedTokens, $calledMatchers];
+        return [$matchedTokens, $calledMatchers, $callback];
     }
 
     /**

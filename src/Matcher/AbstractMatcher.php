@@ -2,7 +2,7 @@
 
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
-class AbstractMatcher
+abstract class AbstractMatcher implements MatcherInterface
 {
     /**
      * @return string
