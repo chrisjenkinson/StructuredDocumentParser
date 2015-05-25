@@ -2,27 +2,24 @@
 
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
-use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
-use chrisjenkinson\StructuredDocumentParser\Token\Token;
+use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 
 class Lexer
 {
     /**
-     * @var MatcherInterface[]
+     * @var StateInterface
      */
-    private $matchers = [];
+    private $state;
 
-    /**
-     * @param MatcherInterface $matcher
-     */
-    public function registerMatcher(MatcherInterface $matcher)
+    public function __construct(StateInterface $initialState)
     {
-        $this->matchers[] = $matcher;
+        $this->state = $initialState;
     }
 
     /**
      * @param string $text
+     *
      * @return TokenStream
      */
     public function tokenise($text)
@@ -31,17 +28,7 @@ class Lexer
         $cursor = new Cursor($text);
 
         while (!$cursor->isEndOfText()) {
-            $token = $this->findMatchingToken($cursor->getRemainingText());
-
-            if (!$token) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'No token found at index: %d, text: %s',
-                        $cursor->getCurrentPosition(),
-                        $cursor->getRemainingText()
-                    )
-                );
-            }
+            $token = $this->getState()->findMatchingToken($this, $cursor);
 
             $tokens->add($token);
 
@@ -52,56 +39,18 @@ class Lexer
     }
 
     /**
-     * @param string $text
-     * @return Token|false
+     * @return StateInterface
      */
-    public function findMatchingToken($text)
+    public function getState()
     {
-        list($matchedTokens, $calledMatchers) = $this->runMatchers($text);
-
-        if (1 < count($matchedTokens)) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Ambiguous token found in text %s with matchers %s, matches: %s',
-                    $text,
-                    implode(', ', $calledMatchers),
-                    var_export($matchedTokens, true)
-                )
-            );
-        }
-
-        if (1 === count($matchedTokens)) {
-            return new Token($calledMatchers[0], $matchedTokens[0]);
-        }
-
-        return false;
+        return $this->state;
     }
 
     /**
-     * @param $text
-     * @return array
+     * @param StateInterface $state
      */
-    public function runMatchers($text)
+    public function setState(StateInterface $state)
     {
-        $matchedTokens  = [];
-        $calledMatchers = [];
-
-        foreach ($this->matchers as $matcher) {
-            if ($matches = $matcher->match($text)) {
-                $matchedTokens[]  = $matches;
-                $calledMatchers[] = $this->getMatcherName($matcher);
-            }
-        }
-
-        return [$matchedTokens, $calledMatchers];
-    }
-
-    /**
-     * @param MatcherInterface $matcher
-     * @return string
-     */
-    public function getMatcherName(MatcherInterface $matcher)
-    {
-        return substr((new \ReflectionClass($matcher))->getShortName(), 0, -7);
+        $this->state = $state;
     }
 }

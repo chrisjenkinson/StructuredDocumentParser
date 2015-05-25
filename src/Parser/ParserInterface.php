@@ -9,6 +9,7 @@ interface ParserInterface
 {
     /**
      * @param TokenStream $tokens
+     *
      * @return NodeInterface
      */
     public function parse(TokenStream $tokens);

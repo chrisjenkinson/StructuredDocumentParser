@@ -16,6 +16,7 @@ abstract class AbstractNode implements NodeInterface
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     public function getAttribute($key)
@@ -29,6 +30,7 @@ abstract class AbstractNode implements NodeInterface
 
     /**
      * @param $key
+     *
      * @return NodeInterface
      */
     public function getNode($key)
@@ -73,7 +75,7 @@ abstract class AbstractNode implements NodeInterface
             $string .= sprintf("%s (%s\n)\n", $name, $node);
         }
 
-        $string .= ")";
+        $string .= ')';
 
         return $string;
     }

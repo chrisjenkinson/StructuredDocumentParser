@@ -41,7 +41,7 @@ class Token implements TokenInterface
 
     public function __toString()
     {
-        return sprintf("%s (%s)", $this->getType(), trim($this->getValue('all')));
+        return sprintf('%s (%s)', $this->getType(), trim($this->getValue('all')));
     }
 
     public function getType()

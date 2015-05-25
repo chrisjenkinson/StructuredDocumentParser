@@ -11,6 +11,7 @@ interface TokenInterface
 
     /**
      * @param $index
+     *
      * @return mixed
      */
     public function getValue($index);
@@ -27,6 +28,7 @@ interface TokenInterface
 
     /**
      * @param $index
+     *
      * @return mixed
      */
     public function hasKey($index);

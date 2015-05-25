@@ -18,6 +18,7 @@ class TokenStream implements \Countable
 
     /**
      * @param int $distance
+     *
      * @return null|TokenInterface
      */
     public function lookAhead($distance = 1)
@@ -55,6 +56,7 @@ class TokenStream implements \Countable
 
     /**
      * @param $expectedType
+     *
      * @return bool
      */
     public function expectTokenType($expectedType)
@@ -76,6 +78,7 @@ class TokenStream implements \Countable
 
     /**
      * @param array $expectedTypes
+     *
      * @return bool
      */
     public function expectTokenTypes(array $expectedTypes)
