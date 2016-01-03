@@ -1,6 +1,0 @@
-suites:
-  sdp_suite:
-    namespace: chrisjenkinson\StructuredDocumentParser
-    psr4_prefix: chrisjenkinson\StructuredDocumentParser
-
-formatter.name: pretty
