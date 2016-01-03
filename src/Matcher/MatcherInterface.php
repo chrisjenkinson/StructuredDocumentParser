@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
 interface MatcherInterface
 {
     /**
-     * @param $text
+     * @param string $text
      *
-     * @return array|null
+     * @return MatchedText|null
      */
-    public function match($text);
+    public function match(string $text);
 
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 }

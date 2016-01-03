@@ -1,17 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
 class TokenStream implements \Countable
 {
+    /**
+     * @var TokenInterface[]
+     */
     private $tokens = [];
 
+    /**
+     * @param TokenInterface $token
+     */
     public function add(TokenInterface $token)
     {
         $this->tokens[] = $token;
     }
 
-    public function count()
+    /**
+     * @return int
+     */
+    public function count(): int
     {
         return count($this->tokens);
     }
@@ -21,7 +32,7 @@ class TokenStream implements \Countable
      *
      * @return null|TokenInterface
      */
-    public function lookAhead($distance = 1)
+    public function lookAhead(int $distance = 1)
     {
         if (!array_key_exists($distance, $this->tokens)) {
             return null;
@@ -33,7 +44,7 @@ class TokenStream implements \Countable
     /**
      * @return TokenInterface
      */
-    public function consumeToken()
+    public function consumeToken(): TokenInterface
     {
         if (!$this->getCurrentToken()) {
             throw new \RuntimeException('End of token stream');
@@ -55,11 +66,11 @@ class TokenStream implements \Countable
     }
 
     /**
-     * @param $expectedType
+     * @param string $expectedType
      *
      * @return bool
      */
-    public function expectTokenType($expectedType)
+    public function expectTokenType(string $expectedType): bool
     {
         if (0 === count($this->tokens)) {
             throw new \RuntimeException(sprintf('No more tokens; expected %s', $expectedType));
@@ -81,7 +92,7 @@ class TokenStream implements \Countable
      *
      * @return bool
      */
-    public function expectTokenTypes(array $expectedTypes)
+    public function expectTokenTypes(array $expectedTypes): bool
     {
         if (0 === count($this->tokens)) {
             throw new \RuntimeException(sprintf('No more tokens; expected any of %s', implode(', ', $expectedTypes)));
@@ -103,7 +114,7 @@ class TokenStream implements \Countable
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return implode("\n", $this->tokens);
     }

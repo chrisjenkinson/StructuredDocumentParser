@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
 abstract class AbstractNode implements NodeInterface
@@ -15,11 +17,11 @@ abstract class AbstractNode implements NodeInterface
     protected $nodes = [];
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @return mixed
      */
-    public function getAttribute($key)
+    public function getAttribute(string $key)
     {
         if (array_key_exists($key, $this->attributes)) {
             return $this->attributes[$key];
@@ -29,11 +31,11 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @return NodeInterface
      */
-    public function getNode($key)
+    public function getNode(string $key): NodeInterface
     {
         if (array_key_exists($key, $this->nodes)) {
             return $this->nodes[$key];
@@ -50,12 +52,18 @@ abstract class AbstractNode implements NodeInterface
         return $this->nodes;
     }
 
+    /**
+     * @param NodeInterface $node
+     */
     public function addNode(NodeInterface $node)
     {
         $this->nodes[$node->getName()] = $node;
     }
 
-    public function getName()
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
         return (new \ReflectionClass($this))->getShortName();
     }
@@ -63,7 +71,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $string = sprintf(
             "%s (%s\n",

@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
 class Token implements TokenInterface
 {
+    /**
+     * @var string
+     */
     private $type;
 
+    /**
+     * @var mixed[]
+     */
     private $value = [];
 
     /**
@@ -13,48 +21,79 @@ class Token implements TokenInterface
      */
     private $position;
 
-    public function __construct($type, $value)
+    /**
+     * Token constructor.
+     *
+     * @param string $type
+     * @param mixed  $value
+     */
+    public function __construct(string $type, $value)
     {
-        $this->type  = $type;
+        $this->type = $type;
         $this->value = $value;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getValues()
     {
         return $this->value;
     }
 
-    public function getPosition()
+    /**
+     * @return TokenPosition
+     */
+    public function getPosition(): TokenPosition
     {
         return $this->position;
     }
 
+    /**
+     * @param TokenPosition $position
+     */
     public function setPosition(TokenPosition $position)
     {
         $this->position = $position;
     }
 
-    public function hasKey($index)
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasKey(string $key): bool
     {
-        return array_key_exists($index, $this->value);
+        return array_key_exists($key, $this->value);
     }
 
-    public function __toString()
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
         return sprintf('%s (%s)', $this->getType(), trim($this->getValue('all')));
     }
 
-    public function getType()
+    /**
+     * @return string
+     */
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function getValue($index)
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getValue(string $key)
     {
-        if (!array_key_exists($index, $this->value)) {
-            throw new \RuntimeException(sprintf('No such index %s exists', $index));
+        if (!array_key_exists($key, $this->value)) {
+            throw new \RuntimeException(sprintf('No such key %s exists', $key));
         }
 
-        return $this->value[$index];
+        return $this->value[$key];
     }
 }
