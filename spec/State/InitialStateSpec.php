@@ -11,4 +11,9 @@ class InitialStateSpec extends ObjectBehavior
     {
         $this->shouldHaveType('chrisjenkinson\StructuredDocumentParser\State\InitialState');
     }
+
+    public function it_has_a_name()
+    {
+        $this->getName()->shouldReturn('InitialState');
+    }
 }

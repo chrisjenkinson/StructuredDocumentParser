@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
@@ -17,6 +19,11 @@ class Lexer
      */
     private $previousStates = [];
 
+    /*
+     * Lexer constructor.
+     *
+     * @param StateInterface $initialState
+     */
     public function __construct(StateInterface $initialState)
     {
         $this->state = $initialState;
@@ -27,7 +34,7 @@ class Lexer
      *
      * @return TokenStream
      */
-    public function tokenise($text)
+    public function tokenise(string $text): TokenStream
     {
         $tokens = new TokenStream;
         $cursor = new Cursor($text);
@@ -46,7 +53,7 @@ class Lexer
     /**
      * @return StateInterface
      */
-    public function getState()
+    public function getState(): StateInterface
     {
         return $this->state;
     }

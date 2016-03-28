@@ -28,9 +28,9 @@ class TokenSpec extends ObjectBehavior
         $this->getValue('all')->shouldReturn('value');
     }
 
-    public function it_throws_an_exeption_if_no_key()
+    public function it_throws_an_exception_if_no_key()
     {
-        $this->shouldThrow('\RuntimeException')->duringGetValue('nonexistent');
+        $this->shouldThrow(\RuntimeException::class)->duringGetValue('nonexistent');
     }
 
     public function it_can_return_all_values()

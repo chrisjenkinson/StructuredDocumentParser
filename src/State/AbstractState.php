@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
 use chrisjenkinson\StructuredDocumentParser\Lexer\Cursor;
 use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
+use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\Token;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
@@ -21,7 +24,7 @@ class AbstractState implements StateInterface
      */
     public function registerMatcher(MatcherInterface $matcher, callable $callback = null)
     {
-        $this->matchers[] = [$matcher, $callback];
+        $this->matchers[] = ['matcher' => $matcher, 'callback' => $callback];
     }
 
     /**
@@ -34,36 +37,26 @@ class AbstractState implements StateInterface
     {
         $text = $cursor->getRemainingText();
 
-        list($matchedTokens, $calledMatchers, $callback) = $this->runMatchers($text);
+        list($matchedText, $calledMatchers, $callback) = $this->runMatchers($text);
 
-        if (1 < count($matchedTokens)) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Ambiguous token found with state %s in text %s with matchers %s, matches: %s',
-                    $this->getName(),
-                    $text,
-                    implode(', ', $calledMatchers),
-                    var_export($matchedTokens, true)
-                )
-            );
+        if (1 < count($matchedText)) {
+            throw new AmbiguousTokenFoundException($this->getName(), $text, $calledMatchers, $matchedText);
         }
 
-        if (1 > count($matchedTokens)) {
-            throw new \RuntimeException(
-                sprintf(
-                    'No token found with state %s at index: %d, text: %s',
-                    $this->getName(),
-                    $cursor->getCurrentPosition(),
-                    $cursor->getRemainingText()
-                )
-            );
+        if (1 > count($matchedText)) {
+            throw new NoTokenFoundException($this->getName(), $cursor->getCurrentPosition(),
+                $cursor->getRemainingText());
         }
+
+        $matcher = $calledMatchers[0];
+        /** @var MatchedText $matchedText */
+        $matchedText = $matchedText[0];
 
         if (is_callable($callback)) {
             $callback($lexer);
         }
 
-        return new Token(substr($calledMatchers[0], 0, -7), $matchedTokens[0]);
+        return new Token(substr($matcher, 0, -7), $matchedText->getAll());
     }
 
     /**
@@ -73,15 +66,23 @@ class AbstractState implements StateInterface
      */
     public function runMatchers($text)
     {
-        $matchedTokens  = [];
+        $matchedTokens = [];
         $calledMatchers = [];
         $callback       = null;
 
-        foreach ($this->matchers as $matcher) {
-            if ($matches = $matcher[0]->match($text)) {
-                $matchedTokens[]  = $matches;
-                $calledMatchers[] = $matcher[0]->getName();
-                $callback         = $matcher[1];
+        foreach ($this->matchers as $value) {
+
+            /**
+             * @var MatcherInterface $matcher
+             */
+            $matcher = $value['matcher'];
+            $callback = $value['callback'];
+
+            $matches = $matcher->match($text);
+
+            if ($matches) {
+                $matchedTokens[] = $matches;
+                $calledMatchers[] = $matcher->getName();
             }
         }
 

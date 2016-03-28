@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
 class Cursor
@@ -19,17 +21,22 @@ class Cursor
      */
     private $text;
 
-    public function __construct($text)
+    /**
+     * Cursor constructor.
+     *
+     * @param string $text
+     */
+    public function __construct(string $text)
     {
-        $this->text            = $text;
+        $this->text = $text;
         $this->currentPosition = 0;
-        $this->textLength      = strlen($text);
+        $this->textLength = strlen($text);
     }
 
     /**
      * @return string
      */
-    public function getRemainingText()
+    public function getRemainingText(): string
     {
         if ($this->isEndOfText()) {
             return '';
@@ -41,7 +48,7 @@ class Cursor
     /**
      * @return bool
      */
-    public function isEndOfText()
+    public function isEndOfText(): bool
     {
         return $this->currentPosition >= $this->textLength;
     }
@@ -49,7 +56,7 @@ class Cursor
     /**
      * @param int $length
      */
-    public function advance($length)
+    public function advance(int $length)
     {
         $this->currentPosition += $length;
     }
@@ -57,7 +64,7 @@ class Cursor
     /**
      * @return int
      */
-    public function getCurrentPosition()
+    public function getCurrentPosition(): int
     {
         return $this->currentPosition;
     }

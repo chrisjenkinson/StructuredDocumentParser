@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
 interface NodeInterface
@@ -7,10 +9,10 @@ interface NodeInterface
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @return string
      */
-    public function __toString();
+    public function __toString(): string;
 }

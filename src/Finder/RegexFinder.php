@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Finder;
 
 class RegexFinder
@@ -14,12 +16,22 @@ class RegexFinder
      */
     private $matches = [];
 
-    public function __construct($pattern)
+    /**
+     * RegexFinder constructor.
+     *
+     * @param $pattern
+     */
+    public function __construct(string $pattern)
     {
         $this->pattern = $pattern;
     }
 
-    public function find($text)
+    /**
+     * @param string $text
+     *
+     * @return bool
+     */
+    public function find(string $text): bool
     {
         if (preg_match($this->pattern, $text, $matches)) {
             $this->matches = $matches;
@@ -30,8 +42,13 @@ class RegexFinder
         return false;
     }
 
-    public function getMatches($array)
+    /**
+     * @param array $keys
+     *
+     * @return mixed
+     */
+    public function getMatches(array $keys): array
     {
-        return array_intersect_key($this->matches, array_flip($array));
+        return array_intersect_key($this->matches, array_flip($keys));
     }
 }
