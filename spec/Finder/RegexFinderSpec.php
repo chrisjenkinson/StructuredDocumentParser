@@ -1,4 +1,6 @@
-<?php namespace spec\chrisjenkinson\StructuredDocumentParser\Finder;
+<?php
+
+namespace spec\chrisjenkinson\StructuredDocumentParser\Finder;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

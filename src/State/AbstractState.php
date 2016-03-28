@@ -17,7 +17,7 @@ class AbstractState implements StateInterface
 
     /**
      * @param MatcherInterface $matcher
-     * @param callable         $callback
+     * @param null|callable    $callback
      */
     public function registerMatcher(MatcherInterface $matcher, callable $callback = null)
     {
@@ -75,13 +75,13 @@ class AbstractState implements StateInterface
     {
         $matchedTokens  = [];
         $calledMatchers = [];
-        $callback = null;
+        $callback       = null;
 
         foreach ($this->matchers as $matcher) {
             if ($matches = $matcher[0]->match($text)) {
                 $matchedTokens[]  = $matches;
                 $calledMatchers[] = $matcher[0]->getName();
-                $callback = $matcher[1];
+                $callback         = $matcher[1];
             }
         }
 

@@ -5,9 +5,9 @@ namespace chrisjenkinson\StructuredDocumentParser\Visitor;
 interface VisitableInterface
 {
     /**
-     * @param VisitorInterface $visitor
+     * @param $visitor
      *
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor);
+    public function accept($visitor);
 }

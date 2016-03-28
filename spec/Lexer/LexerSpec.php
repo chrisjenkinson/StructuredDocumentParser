@@ -22,4 +22,11 @@ class LexerSpec extends ObjectBehavior
     {
         $this->getState()->shouldBeAnInstanceOf(StateInterface::class);
     }
+
+    public function it_records_previous_states(StateInterface $state1, StateInterface $state2)
+    {
+        $this->beConstructedWith($state1);
+        $this->setState($state2);
+        $this->getLastState()->shouldReturn($state1);
+    }
 }

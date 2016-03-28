@@ -12,6 +12,11 @@ class Lexer
      */
     private $state;
 
+    /**
+     * @var StateInterface[]
+     */
+    private $previousStates = [];
+
     public function __construct(StateInterface $initialState)
     {
         $this->state = $initialState;
@@ -51,6 +56,15 @@ class Lexer
      */
     public function setState(StateInterface $state)
     {
+        $this->previousStates[] = $this->state;
         $this->state = $state;
+    }
+
+    /**
+     * @return StateInterface
+     */
+    public function getLastState()
+    {
+        return end($this->previousStates);
     }
 }

@@ -2,9 +2,7 @@
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
-use chrisjenkinson\StructuredDocumentParser\Visitor\VisitableInterface;
-
-interface NodeInterface extends VisitableInterface
+interface NodeInterface
 {
     /**
      * @return string

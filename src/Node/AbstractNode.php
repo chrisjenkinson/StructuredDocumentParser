@@ -15,7 +15,7 @@ abstract class AbstractNode implements NodeInterface
     protected $nodes = [];
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -29,13 +29,27 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * @param $key
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasNode($key)
+    {
+        if (array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $key
      *
      * @return NodeInterface
      */
     public function getNode($key)
     {
-        if (array_key_exists($key, $this->nodes)) {
+        if (array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface) {
             return $this->nodes[$key];
         }
 
