@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
@@ -32,7 +32,7 @@ class MatchedText
             return $this->matches[$key];
         }
 
-        return null;
+        return;
     }
 
     /**

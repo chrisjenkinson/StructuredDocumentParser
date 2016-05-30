@@ -3,7 +3,6 @@
 namespace spec\chrisjenkinson\StructuredDocumentParser\Token;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class NonexistentKeyExceptionSpec extends ObjectBehavior
 {

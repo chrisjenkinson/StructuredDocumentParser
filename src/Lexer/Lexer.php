@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
@@ -36,7 +36,7 @@ class Lexer
      */
     public function tokenise(string $text): TokenStream
     {
-        $tokens = new TokenStream;
+        $tokens = new TokenStream();
         $cursor = new Cursor($text);
 
         while (!$cursor->isEndOfText()) {

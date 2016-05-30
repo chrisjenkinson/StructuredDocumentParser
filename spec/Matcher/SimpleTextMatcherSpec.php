@@ -4,7 +4,6 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\Matcher;
 
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class SimpleTextMatcherSpec extends ObjectBehavior
 {

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
@@ -35,7 +35,7 @@ class TokenStream implements \Countable
     public function lookAhead(int $distance = 1)
     {
         if (!array_key_exists($distance, $this->tokens)) {
-            return null;
+            return;
         }
 
         return $this->tokens[$distance];
@@ -59,7 +59,7 @@ class TokenStream implements \Countable
     public function getCurrentToken()
     {
         if (0 === count($this->tokens)) {
-            return null;
+            return;
         }
 
         return $this->tokens[0];

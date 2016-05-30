@@ -4,7 +4,7 @@
   "type": "library",
   "require-dev": {
     "phpspec/phpspec": "*",
-    "phpspec/prophecy": "dev-master",
+    "phpspec/prophecy": "*",
     "henrikbjorn/phpspec-code-coverage": "*"
   },
   "license": "MIT",

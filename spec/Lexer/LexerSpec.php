@@ -7,7 +7,6 @@ use chrisjenkinson\StructuredDocumentParser\State\InitialState;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class LexerSpec extends ObjectBehavior
 {
@@ -28,8 +27,8 @@ class LexerSpec extends ObjectBehavior
 
     public function it_can_tokenise()
     {
-        $state = new InitialState;
-        $state->registerMatcher(new SimpleTextMatcher);
+        $state = new InitialState();
+        $state->registerMatcher(new SimpleTextMatcher());
 
         $this->beConstructedWith($state);
 
@@ -38,11 +37,11 @@ class LexerSpec extends ObjectBehavior
 
     public function it_can_switch_state()
     {
-        $origState = new InitialState;
-        $origState->registerMatcher(new SimpleTextMatcher);
+        $origState = new InitialState();
+        $origState->registerMatcher(new SimpleTextMatcher());
 
-        $newState = new InitialState;
-        $newState->registerMatcher(new SimpleTextMatcher);
+        $newState = new InitialState();
+        $newState->registerMatcher(new SimpleTextMatcher());
 
         $this->beConstructedWith($origState);
 
@@ -55,11 +54,11 @@ class LexerSpec extends ObjectBehavior
 
     public function it_records_previous_states()
     {
-        $origState = new InitialState;
-        $origState->registerMatcher(new SimpleTextMatcher);
+        $origState = new InitialState();
+        $origState->registerMatcher(new SimpleTextMatcher());
 
-        $newState = new InitialState;
-        $newState->registerMatcher(new SimpleTextMatcher);
+        $newState = new InitialState();
+        $newState->registerMatcher(new SimpleTextMatcher());
 
         $this->beConstructedWith($origState);
 

@@ -3,7 +3,6 @@
 namespace spec\chrisjenkinson\StructuredDocumentParser\Matcher;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class MatchedTextSpec extends ObjectBehavior
 {

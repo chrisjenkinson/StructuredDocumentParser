@@ -4,7 +4,6 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\Token;
 
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class TokenStreamSpec extends ObjectBehavior
 {

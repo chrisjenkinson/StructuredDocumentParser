@@ -3,7 +3,6 @@
 namespace spec\chrisjenkinson\StructuredDocumentParser\State;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class InitialStateSpec extends ObjectBehavior
 {

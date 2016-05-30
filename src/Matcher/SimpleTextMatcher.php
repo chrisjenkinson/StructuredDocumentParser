@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
@@ -34,6 +34,6 @@ class SimpleTextMatcher extends AbstractMatcher
             return new MatchedText($this->finder->getMatches(['all']));
         }
 
-        return null;
+        return;
     }
 }

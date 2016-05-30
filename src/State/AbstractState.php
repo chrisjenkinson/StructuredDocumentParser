@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
@@ -68,12 +68,12 @@ class AbstractState implements StateInterface
     {
         $matchedTokens = [];
         $calledMatchers = [];
-        $callback       = null;
+        $callback = null;
 
         foreach ($this->matchers as $value) {
 
             /**
-             * @var MatcherInterface $matcher
+             * @var MatcherInterface
              */
             $matcher = $value['matcher'];
             $callback = $value['callback'];

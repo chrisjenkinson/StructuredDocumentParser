@@ -3,7 +3,6 @@
 namespace spec\chrisjenkinson\StructuredDocumentParser\Lexer;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class CursorSpec extends ObjectBehavior
 {

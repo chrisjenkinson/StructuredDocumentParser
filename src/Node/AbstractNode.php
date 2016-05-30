@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
@@ -51,7 +51,7 @@ abstract class AbstractNode implements NodeInterface
      */
     public function getNode(string $key): NodeInterface
     {
-        if (array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface) {
+        if ($this->hasNode($key)) {
             return $this->nodes[$key];
         }
 
@@ -87,19 +87,7 @@ abstract class AbstractNode implements NodeInterface
      */
     public function __toString(): string
     {
-        $string = sprintf(
-            "%s (%s\n",
-            get_class($this),
-            var_export($this->getAttributes(), true)
-        );
-
-        foreach ($this->nodes as $name => $node) {
-            $string .= sprintf("%s (%s\n)\n", $name, $node);
-        }
-
-        $string .= ')';
-
-        return $string;
+        return json_encode(['attributes' => $this->attributes, 'nodes' => $this->nodes], JSON_PRETTY_PRINT);
     }
 
     /**
@@ -108,5 +96,14 @@ abstract class AbstractNode implements NodeInterface
     public function getAttributes()
     {
         return $this->attributes;
+    }
+
+    /**
+     * @param string $key
+     * @param        $value
+     */
+    public function setAttribute(string $key, $value)
+    {
+        $this->attributes[$key] = $value;
     }
 }

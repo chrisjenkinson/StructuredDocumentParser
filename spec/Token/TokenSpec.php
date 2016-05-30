@@ -4,7 +4,6 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\Token;
 
 use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class TokenSpec extends ObjectBehavior
 {
