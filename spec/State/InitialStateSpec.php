@@ -26,6 +26,7 @@ class InitialStateSpec extends ObjectBehavior
     public function it_throws_an_exception_if_there_is_an_ambiguous_token(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher1, MatcherInterface $matcher2)
     {
         $cursor->getRemainingText()->willReturn('remainingText');
+        $cursor->getCurrentPosition()->willReturn(0);
 
         $this->registerMatcher($matcher1);
         $this->registerMatcher($matcher2);
@@ -54,6 +55,7 @@ class InitialStateSpec extends ObjectBehavior
     public function it_returns_a_token(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText)
     {
         $cursor->getRemainingText()->willReturn('remainingText');
+        $cursor->getCurrentPosition()->willReturn(0);
 
         $this->registerMatcher($matcher);
 
@@ -68,6 +70,7 @@ class InitialStateSpec extends ObjectBehavior
     public function it_calls_a_callback(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText)
     {
         $cursor->getRemainingText()->willReturn('remainingText');
+        $cursor->getCurrentPosition()->willReturn(0);
 
         $lexer->getState()->shouldBeCalled();
 
