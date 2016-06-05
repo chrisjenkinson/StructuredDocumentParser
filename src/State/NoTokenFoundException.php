@@ -41,8 +41,12 @@ class NoTokenFoundException extends \RuntimeException
         $this->currentPosition = $currentPosition;
         $this->remainingText   = $remainingText;
 
-        $message = sprintf('No token found with state %s, current position: %d, remaining text: %s', $stateName,
-            $currentPosition, $remainingText);
+        $message = sprintf(
+            'No token found with state %s, current position: %d, remaining text: %s',
+            $stateName,
+            $currentPosition,
+            $remainingText
+        );
 
         parent::__construct($message, $code, $previous);
     }

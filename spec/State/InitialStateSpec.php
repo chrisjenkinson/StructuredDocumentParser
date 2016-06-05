@@ -71,7 +71,10 @@ class InitialStateSpec extends ObjectBehavior
 
         $lexer->getState()->shouldBeCalled();
 
-        $this->registerMatcher($matcher, function (Lexer $lexer) {$lexer->getState();});
+        $this->registerMatcher($matcher, function (Lexer $lexer) {
+            $lexer->getState();
+
+        });
 
         $matcher->match('remainingText')->willReturn($matchedText);
         $matcher->getName()->willReturn('matcher');

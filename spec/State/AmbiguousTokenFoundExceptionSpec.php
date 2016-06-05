@@ -8,8 +8,12 @@ class AmbiguousTokenFoundExceptionSpec extends ObjectBehavior
 {
     public function let()
     {
-        $this->beConstructedWith('stateName', 'text', ['calledMatcher1', 'calledMatcher2'],
-            ['MatchedToken1', 'MatchedToken2']);
+        $this->beConstructedWith(
+            'stateName',
+            'text',
+            ['calledMatcher1', 'calledMatcher2'],
+            ['MatchedToken1', 'MatchedToken2']
+        );
     }
 
     public function it_is_initializable()

@@ -39,17 +39,7 @@ abstract class AbstractState implements StateInterface
 
         list($matchedText, $calledMatchers, $callbacks) = $this->runMatchers($text);
 
-        if (1 < count($matchedText)) {
-            throw new AmbiguousTokenFoundException($this->getName(), $text, $calledMatchers, $matchedText);
-        }
-
-        if (1 > count($matchedText)) {
-            throw new NoTokenFoundException(
-                $this->getName(),
-                $cursor->getCurrentPosition(),
-                $cursor->getRemainingText()
-            );
-        }
+        $this->guardAgainstWrongNumberOfMatches($matchedText, $text, $calledMatchers, $cursor->getCurrentPosition());
 
         $matcher = $calledMatchers[0];
         /** @var MatchedText $matchedText */
@@ -63,6 +53,22 @@ abstract class AbstractState implements StateInterface
         return new Token(substr($matcher, 0, -7), $matchedText->getAll());
     }
 
+    public function guardAgainstWrongNumberOfMatches(
+        array $matchedText,
+        string $remainingText,
+        array $calledMatchers,
+        int $currentPosition
+    ) {
+
+        if (1 < count($matchedText)) {
+            throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText);
+        }
+
+        if (1 > count($matchedText)) {
+            throw new NoTokenFoundException($this->getName(), $currentPosition, $remainingText);
+        }
+    }
+
     /**
      * @param string $text
      *
@@ -74,22 +80,17 @@ abstract class AbstractState implements StateInterface
         $calledMatchers = [];
         $callbacks      = [];
 
-        foreach ($this->matchers as $value) {
+        array_map(function (array $matcherAndCallback) use ($text, &$matchedTokens, &$calledMatchers, &$callbacks) {
+            $matcher  = $matcherAndCallback['matcher'];
+            $callback = $matcherAndCallback['callback'];
 
-            /**
-             * @var MatcherInterface
-             */
-            $matcher  = $value['matcher'];
-            $callback = $value['callback'];
-
-            $matches = $matcher->match($text);
-
-            if ($matches) {
+            if ($matches = $matcher->match($text)) {
                 $matchedTokens[]  = $matches;
                 $calledMatchers[] = $matcher->getName();
                 $callbacks[]      = $callback;
             }
-        }
+
+        }, $this->matchers);
 
         return [$matchedTokens, $calledMatchers, $callbacks];
     }

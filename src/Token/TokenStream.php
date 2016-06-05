@@ -88,7 +88,7 @@ class TokenStream implements \Countable
     }
 
     /**
-     * @param array $expectedTypes
+     * @param string[] $expectedTypes
      *
      * @return true
      */
@@ -100,10 +100,12 @@ class TokenStream implements \Countable
 
         $currentToken = $this->getCurrentToken();
 
-        foreach ($expectedTypes as $expectedType) {
-            if ($expectedType === $currentToken->getType()) {
-                return true;
-            }
+        $expected = array_filter($expectedTypes, function (string $expectedType) use ($currentToken) {
+            return ($expectedType === $currentToken->getType());
+        });
+
+        if (count($expected) >= 1) {
+            return true;
         }
 
         throw new \RuntimeException(
