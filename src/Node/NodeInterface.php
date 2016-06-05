@@ -15,4 +15,46 @@ interface NodeInterface
      * @return string
      */
     public function __toString(): string;
+
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getAttribute(string $key);
+
+    /**
+     * @return mixed
+     */
+    public function getAttributes();
+
+    /**
+     * @param string $key
+     * @param $value
+     */
+    public function setAttribute(string $key, $value);
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasNode(string $key): bool;
+
+    /**
+     * @param string $key
+     *
+     * @return NodeInterface
+     */
+    public function getNode(string $key): NodeInterface;
+
+    /**
+     * @return NodeInterface[]
+     */
+    public function getNodes(): array;
+
+    /**
+     * @param NodeInterface $node
+     */
+    public function addNode(NodeInterface $node);
 }

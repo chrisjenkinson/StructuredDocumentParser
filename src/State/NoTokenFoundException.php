@@ -7,6 +7,21 @@ namespace chrisjenkinson\StructuredDocumentParser\State;
 class NoTokenFoundException extends \RuntimeException
 {
     /**
+     * @var string
+     */
+    private $stateName;
+
+    /**
+     * @var int
+     */
+    private $currentPosition;
+
+    /**
+     * @var string
+     */
+    private $remainingText;
+
+    /**
      * NoTokenFoundException constructor.
      *
      * @param string          $stateName
@@ -22,9 +37,37 @@ class NoTokenFoundException extends \RuntimeException
         int $code = 0,
         \Throwable $previous = null
     ) {
+        $this->stateName = $stateName;
+        $this->currentPosition = $currentPosition;
+        $this->remainingText = $remainingText;
+
         $message = sprintf('No token found with state %s, current position: %d, remaining text: %s', $stateName,
             $currentPosition, $remainingText);
 
         parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStateName(): string
+    {
+        return $this->stateName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrentPosition(): int
+    {
+        return $this->currentPosition;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemainingText(): string
+    {
+        return $this->remainingText;
     }
 }

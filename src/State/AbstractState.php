@@ -37,7 +37,7 @@ class AbstractState implements StateInterface
     {
         $text = $cursor->getRemainingText();
 
-        list($matchedText, $calledMatchers, $callback) = $this->runMatchers($text);
+        list($matchedText, $calledMatchers, $callbacks) = $this->runMatchers($text);
 
         if (1 < count($matchedText)) {
             throw new AmbiguousTokenFoundException($this->getName(), $text, $calledMatchers, $matchedText);
@@ -51,6 +51,7 @@ class AbstractState implements StateInterface
         $matcher = $calledMatchers[0];
         /** @var MatchedText $matchedText */
         $matchedText = $matchedText[0];
+        $callback = $callbacks[0];
 
         if (is_callable($callback)) {
             $callback($lexer);
@@ -68,7 +69,7 @@ class AbstractState implements StateInterface
     {
         $matchedTokens = [];
         $calledMatchers = [];
-        $callback = null;
+        $callbacks = [];
 
         foreach ($this->matchers as $value) {
 
@@ -83,10 +84,11 @@ class AbstractState implements StateInterface
             if ($matches) {
                 $matchedTokens[] = $matches;
                 $calledMatchers[] = $matcher->getName();
+                $callbacks[] = $callback;
             }
         }
 
-        return [$matchedTokens, $calledMatchers, $callback];
+        return [$matchedTokens, $calledMatchers, $callbacks];
     }
 
     /**
