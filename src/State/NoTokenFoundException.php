@@ -37,9 +37,9 @@ class NoTokenFoundException extends \RuntimeException
         int $code = 0,
         \Throwable $previous = null
     ) {
-        $this->stateName = $stateName;
+        $this->stateName       = $stateName;
         $this->currentPosition = $currentPosition;
-        $this->remainingText = $remainingText;
+        $this->remainingText   = $remainingText;
 
         $message = sprintf('No token found with state %s, current position: %d, remaining text: %s', $stateName,
             $currentPosition, $remainingText);

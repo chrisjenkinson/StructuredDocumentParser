@@ -2,8 +2,8 @@
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\NodeVisitor;
 
-use PhpSpec\ObjectBehavior;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
+use PhpSpec\ObjectBehavior;
 
 class SimpleNodeVisitorSpec extends ObjectBehavior
 {

@@ -9,7 +9,7 @@ interface TokenInterface
     /**
      * @return mixed[]
      */
-    public function getValues();
+    public function getValues(): array;
 
     /**
      * @param string $key

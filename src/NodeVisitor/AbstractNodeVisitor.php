@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\NodeVisitor;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
@@ -9,12 +11,10 @@ use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
  *
  * @package chrisjenkinson\StructuredDocumentParser\NodeVisitor
  */
-class AbstractNodeVisitor implements NodeVisitorInterface
+abstract class AbstractNodeVisitor implements NodeVisitorInterface
 {
     /**
-     * @param NodeInterface $node
-     *
-     * @return null
+     * {@inheritdoc}
      */
     public function beforeTraverse(NodeInterface $node)
     {
@@ -22,9 +22,7 @@ class AbstractNodeVisitor implements NodeVisitorInterface
     }
 
     /**
-     * @param NodeInterface $node
-     *
-     * @return null
+     * {@inheritdoc}
      */
     public function afterTraverse(NodeInterface $node)
     {
@@ -32,9 +30,7 @@ class AbstractNodeVisitor implements NodeVisitorInterface
     }
 
     /**
-     * @param NodeInterface $node
-     *
-     * @return null
+     * {@inheritdoc}
      */
     public function enterNode(NodeInterface $node)
     {
@@ -42,9 +38,7 @@ class AbstractNodeVisitor implements NodeVisitorInterface
     }
 
     /**
-     * @param NodeInterface $node
-     *
-     * @return null
+     * {@inheritdoc}
      */
     public function leaveNode(NodeInterface $node)
     {

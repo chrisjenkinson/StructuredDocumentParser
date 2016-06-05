@@ -29,14 +29,14 @@ class Token implements TokenInterface
      */
     public function __construct(string $type, $value)
     {
-        $this->type = $type;
+        $this->type  = $type;
         $this->value = $value;
     }
 
     /**
      * @return mixed[]
      */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->value;
     }

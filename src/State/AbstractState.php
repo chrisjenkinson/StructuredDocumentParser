@@ -11,7 +11,7 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\Token;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 
-class AbstractState implements StateInterface
+abstract class AbstractState implements StateInterface
 {
     /**
      * @var MatcherInterface[]
@@ -44,14 +44,17 @@ class AbstractState implements StateInterface
         }
 
         if (1 > count($matchedText)) {
-            throw new NoTokenFoundException($this->getName(), $cursor->getCurrentPosition(),
-                $cursor->getRemainingText());
+            throw new NoTokenFoundException(
+                $this->getName(),
+                $cursor->getCurrentPosition(),
+                $cursor->getRemainingText()
+            );
         }
 
         $matcher = $calledMatchers[0];
         /** @var MatchedText $matchedText */
         $matchedText = $matchedText[0];
-        $callback = $callbacks[0];
+        $callback    = $callbacks[0];
 
         if (is_callable($callback)) {
             $callback($lexer);
@@ -65,26 +68,26 @@ class AbstractState implements StateInterface
      *
      * @return array
      */
-    public function runMatchers($text)
+    public function runMatchers(string $text): array
     {
-        $matchedTokens = [];
+        $matchedTokens  = [];
         $calledMatchers = [];
-        $callbacks = [];
+        $callbacks      = [];
 
         foreach ($this->matchers as $value) {
 
             /**
              * @var MatcherInterface
              */
-            $matcher = $value['matcher'];
+            $matcher  = $value['matcher'];
             $callback = $value['callback'];
 
             $matches = $matcher->match($text);
 
             if ($matches) {
-                $matchedTokens[] = $matches;
+                $matchedTokens[]  = $matches;
                 $calledMatchers[] = $matcher->getName();
-                $callbacks[] = $callback;
+                $callbacks[]      = $callback;
             }
         }
 
@@ -94,7 +97,7 @@ class AbstractState implements StateInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return (new \ReflectionClass($this))->getShortName();
     }

@@ -37,11 +37,7 @@ abstract class AbstractNode implements NodeInterface
      */
     public function hasNode(string $key): bool
     {
-        if (array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface) {
-            return true;
-        }
-
-        return false;
+        return (array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface);
     }
 
     /**

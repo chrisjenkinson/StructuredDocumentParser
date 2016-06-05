@@ -32,13 +32,13 @@ class MatchedText
             return $this->matches[$key];
         }
 
-        return;
+        return null;
     }
 
     /**
      * @return mixed[]
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->matches;
     }

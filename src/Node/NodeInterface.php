@@ -31,6 +31,8 @@ interface NodeInterface
     /**
      * @param string $key
      * @param $value
+     *
+     * @return void
      */
     public function setAttribute(string $key, $value);
 
@@ -55,6 +57,8 @@ interface NodeInterface
 
     /**
      * @param NodeInterface $node
+     *
+     * @return void
      */
     public function addNode(NodeInterface $node);
 }

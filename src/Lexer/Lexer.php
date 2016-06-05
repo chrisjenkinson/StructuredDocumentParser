@@ -64,13 +64,13 @@ class Lexer
     public function setState(StateInterface $state)
     {
         $this->previousStates[] = $this->state;
-        $this->state = $state;
+        $this->state            = $state;
     }
 
     /**
      * @return StateInterface
      */
-    public function getLastState()
+    public function getLastState(): StateInterface
     {
         return end($this->previousStates);
     }

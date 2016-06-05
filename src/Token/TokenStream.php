@@ -35,7 +35,7 @@ class TokenStream implements \Countable
     public function lookAhead(int $distance = 1)
     {
         if (!array_key_exists($distance, $this->tokens)) {
-            return;
+            return null;
         }
 
         return $this->tokens[$distance];
@@ -59,7 +59,7 @@ class TokenStream implements \Countable
     public function getCurrentToken()
     {
         if (0 === count($this->tokens)) {
-            return;
+            return null;
         }
 
         return $this->tokens[0];
@@ -68,7 +68,7 @@ class TokenStream implements \Countable
     /**
      * @param string $expectedType
      *
-     * @return bool
+     * @return true
      */
     public function expectTokenType(string $expectedType): bool
     {
@@ -90,7 +90,7 @@ class TokenStream implements \Countable
     /**
      * @param array $expectedTypes
      *
-     * @return bool
+     * @return true
      */
     public function expectTokenTypes(array $expectedTypes): bool
     {

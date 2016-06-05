@@ -45,7 +45,7 @@ class RegexFinder
     /**
      * @param array $keys
      *
-     * @return mixed
+     * @return array
      */
     public function getMatches(array $keys): array
     {

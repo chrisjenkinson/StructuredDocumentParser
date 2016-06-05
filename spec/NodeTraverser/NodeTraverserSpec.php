@@ -2,10 +2,10 @@
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\NodeTraverser;
 
-use PhpSpec\ObjectBehavior;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
-use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 use chrisjenkinson\StructuredDocumentParser\NodeTraverser\NodeTraverser;
+use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
+use PhpSpec\ObjectBehavior;
 
 class NodeTraverserSpec extends ObjectBehavior
 {

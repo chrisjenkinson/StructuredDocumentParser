@@ -34,6 +34,6 @@ class SimpleTextMatcher extends AbstractMatcher
             return new MatchedText($this->finder->getMatches(['all']));
         }
 
-        return;
+        return null;
     }
 }

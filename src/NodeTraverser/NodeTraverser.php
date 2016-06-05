@@ -1,9 +1,11 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace chrisjenkinson\StructuredDocumentParser\NodeTraverser;
 
-use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
+use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 
 /**
  * Class NodeTraverser
@@ -58,7 +60,7 @@ class NodeTraverser
      */
     public function traverseNode(NodeInterface $node)
     {
-        $children = $node->getNodes();
+        $children   = $node->getNodes();
         $attributes = $node->getAttributes();
 
         foreach ($this->visitors as $visitor) {
@@ -102,8 +104,10 @@ class NodeTraverser
 
     /**
      * @param array $children
+     *
+     * @return array
      */
-    public function traverseChildren(array $children)
+    public function traverseChildren(array $children): array
     {
         foreach ($children as $key => $child) {
             if (!$child instanceof NodeInterface) {

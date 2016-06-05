@@ -23,10 +23,10 @@ interface StateInterface
      *
      * @return array
      */
-    public function runMatchers($text);
+    public function runMatchers(string $text): array;
 
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 }

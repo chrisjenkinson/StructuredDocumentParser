@@ -2,14 +2,14 @@
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\State;
 
-use PhpSpec\ObjectBehavior;
-use chrisjenkinson\StructuredDocumentParser\State\AmbiguousTokenFoundException;
-use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Lexer\Cursor;
 use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
+use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
+use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
+use chrisjenkinson\StructuredDocumentParser\State\AmbiguousTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\State\NoTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
-use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
+use PhpSpec\ObjectBehavior;
 
 class InitialStateSpec extends ObjectBehavior
 {
@@ -60,6 +60,8 @@ class InitialStateSpec extends ObjectBehavior
         $matcher->match('remainingText')->willReturn($matchedText);
         $matcher->getName()->willReturn('matcher');
 
+        $matchedText->getAll()->willReturn(['all' => 'remainingText']);
+
         $this->findMatchingToken($lexer, $cursor)->shouldReturnAnInstanceOf(TokenInterface::class);
     }
 
@@ -73,6 +75,8 @@ class InitialStateSpec extends ObjectBehavior
 
         $matcher->match('remainingText')->willReturn($matchedText);
         $matcher->getName()->willReturn('matcher');
+
+        $matchedText->getAll()->willReturn(['all' => 'remainingText']);
 
         $this->findMatchingToken($lexer, $cursor)->shouldReturnAnInstanceOf(TokenInterface::class);
     }
