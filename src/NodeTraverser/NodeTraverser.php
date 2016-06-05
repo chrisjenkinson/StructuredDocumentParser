@@ -114,7 +114,7 @@ class NodeTraverser
      */
     private function runTraverseChildrenOnAttributes(NodeInterface $node, array $attributes)
     {
-        array_walk($attributes, function ($attribute, $key) use (&$node, $attributes) {
+        array_walk($attributes, function ($attribute, $key) use (&$node) {
             if (!is_array($attribute)) {
                 return;
             }
@@ -154,7 +154,7 @@ class NodeTraverser
     {
         $keysToRemove = [];
 
-        array_walk($children, function ($child, $key) use (&$keysToRemove) {
+        array_walk($children, function ($child, $key) use (&$keysToRemove, &$children) {
             if (!$child instanceof NodeInterface) {
                 return;
             }
