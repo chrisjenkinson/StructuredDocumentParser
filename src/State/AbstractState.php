@@ -58,7 +58,8 @@ abstract class AbstractState implements StateInterface
         string $remainingText,
         array $calledMatchers,
         int $currentPosition
-    ) {
+    )
+    {
 
         if (1 < count($matchedText)) {
             throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText);

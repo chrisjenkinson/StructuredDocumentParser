@@ -23,7 +23,8 @@ class AmbiguousTokenFoundException extends \RuntimeException
         $matchedTokens,
         int $code = 0,
         \Throwable $previous = null
-    ) {
+    )
+    {
         $message = sprintf(
             'Ambiguous token found with state %s in text %s with matchers %s, matches: %s',
             $stateName,

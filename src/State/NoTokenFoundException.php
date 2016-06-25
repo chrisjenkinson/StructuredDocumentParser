@@ -36,7 +36,8 @@ class NoTokenFoundException extends \RuntimeException
         string $remainingText,
         int $code = 0,
         \Throwable $previous = null
-    ) {
+    )
+    {
         $this->stateName       = $stateName;
         $this->currentPosition = $currentPosition;
         $this->remainingText   = $remainingText;

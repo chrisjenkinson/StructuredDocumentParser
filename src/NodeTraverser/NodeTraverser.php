@@ -92,7 +92,7 @@ class NodeTraverser
     }
 
     /**
-     * @param NodeInterface $node
+     * @param NodeInterface   $node
      * @param NodeInterface[] $children
      */
     private function runTraverseNodeOnSubNodes(NodeInterface $node, array $children)
@@ -110,7 +110,7 @@ class NodeTraverser
 
     /**
      * @param NodeInterface $node
-     * @param array $attributes
+     * @param array         $attributes
      */
     private function runTraverseChildrenOnAttributes(NodeInterface $node, array $attributes)
     {
@@ -133,6 +133,10 @@ class NodeTraverser
     private function runLeaveNodeVisitors(NodeInterface $node)
     {
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node) {
+            if (self::REMOVE_NODE === $node) {
+                return;
+            }
+
             $leave = $nodeVisitor->leaveNode($node);
 
             if (null === $leave) {

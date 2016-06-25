@@ -14,12 +14,13 @@ class NodeTraverserSpec extends ObjectBehavior
         $this->shouldHaveType('chrisjenkinson\StructuredDocumentParser\NodeTraverser\NodeTraverser');
     }
 
-    public function it_can_traverse_a_node(NodeInterface $node, NodeVisitorInterface $nodeVisitor)
+    public function it_can_traverse_a_node(NodeInterface $node, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2)
     {
         $node->getNodes()->willReturn([]);
         $node->getAttributes()->willReturn([]);
 
         $this->addVisitor($nodeVisitor);
+        $this->addVisitor($nodeVisitor2);
 
         $this->traverse($node)->shouldReturn($node);
 
@@ -29,7 +30,7 @@ class NodeTraverserSpec extends ObjectBehavior
         $nodeVisitor->afterTraverse($node)->shouldHaveBeenCalled();
     }
 
-    public function it_can_add_a_child(NodeInterface $node, NodeInterface $child, NodeVisitorInterface $nodeVisitor)
+    public function it_can_add_a_child(NodeInterface $node, NodeInterface $child, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2)
     {
         $node->getNodes()->willReturn([$child]);
         $node->getAttributes()->willReturn([]);
@@ -40,6 +41,7 @@ class NodeTraverserSpec extends ObjectBehavior
         $node->addNode($child)->shouldBeCalled();
 
         $this->addVisitor($nodeVisitor);
+        $this->addVisitor($nodeVisitor2);
 
         $this->traverse($node)->shouldReturn($node);
 
@@ -47,7 +49,7 @@ class NodeTraverserSpec extends ObjectBehavior
         $nodeVisitor->afterTraverse($node)->shouldHaveBeenCalled();
     }
 
-    public function it_can_replace_a_node(NodeInterface $root, NodeInterface $node, NodeInterface $replacement, NodeVisitorInterface $nodeVisitor)
+    public function it_can_replace_a_node(NodeInterface $root, NodeInterface $node, NodeInterface $replacement, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2)
     {
         $root->getNodes()->willReturn([$node]);
         $root->getAttributes()->willReturn([]);
@@ -68,11 +70,12 @@ class NodeTraverserSpec extends ObjectBehavior
         $root->addNode($replacement)->shouldBeCalled();
 
         $this->addVisitor($nodeVisitor);
+        $this->addVisitor($nodeVisitor2);
 
         $this->traverse($root)->shouldReturn($root);
     }
 
-    public function it_can_remove_a_child(NodeInterface $node, NodeInterface $child, NodeVisitorInterface $nodeVisitor)
+    public function it_can_remove_a_child(NodeInterface $node, NodeInterface $child, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2)
     {
         $node->getNodes()->willReturn([]);
         $node->getAttributes()->willReturn(['children' => [$child]]);
@@ -91,16 +94,18 @@ class NodeTraverserSpec extends ObjectBehavior
         $node->setAttribute('children', [])->shouldBeCalled();
 
         $this->addVisitor($nodeVisitor);
+        $this->addVisitor($nodeVisitor2);
 
         $this->traverse($node)->shouldReturn($node);
     }
 
-    public function it_ignores_array_attributes_when_traversing_children(NodeInterface $node, NodeVisitorInterface $nodeVisitor)
+    public function it_ignores_array_attributes_when_traversing_children(NodeInterface $node, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2)
     {
         $node->getNodes()->willReturn([]);
         $node->getAttributes()->willReturn(['attr' => ['something' => true]]);
 
         $this->addVisitor($nodeVisitor);
+        $this->addVisitor($nodeVisitor2);
 
         $node->setAttribute('attr', ['something' => true])->shouldBeCalled();
 
