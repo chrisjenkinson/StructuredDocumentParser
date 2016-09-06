@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Finder;
 
+/**
+ * Class RegexFinder
+ * @package chrisjenkinson\StructuredDocumentParser\Finder
+ */
 class RegexFinder
 {
     /**

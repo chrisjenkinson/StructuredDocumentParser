@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
+/**
+ * Class MatchedText
+ * @package chrisjenkinson\StructuredDocumentParser\Matcher
+ */
 class MatchedText
 {
     /**

@@ -6,6 +6,10 @@ namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
 use chrisjenkinson\StructuredDocumentParser\Finder\RegexFinder;
 
+/**
+ * Class SimpleTextMatcher
+ * @package chrisjenkinson\StructuredDocumentParser\Matcher
+ */
 class SimpleTextMatcher extends AbstractMatcher
 {
     /**

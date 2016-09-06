@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
+/**
+ * Class AbstractNode
+ * @package chrisjenkinson\StructuredDocumentParser\Node
+ */
 abstract class AbstractNode implements NodeInterface
 {
     /**

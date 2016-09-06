@@ -8,7 +8,6 @@ use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 
 /**
  * Interface NodeVisitorInterface
- *
  * @package chrisjenkinson\StructuredDocumentParser\NodeVisitor
  */
 interface NodeVisitorInterface

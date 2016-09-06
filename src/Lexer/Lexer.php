@@ -7,6 +7,10 @@ namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 
+/**
+ * Class Lexer
+ * @package chrisjenkinson\StructuredDocumentParser\Lexer
+ */
 class Lexer
 {
     /**
@@ -19,7 +23,7 @@ class Lexer
      */
     private $previousStates = [];
 
-    /*
+    /**
      * Lexer constructor.
      *
      * @param StateInterface $initialState

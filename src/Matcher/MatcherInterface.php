@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
+/**
+ * Interface MatcherInterface
+ * @package chrisjenkinson\StructuredDocumentParser\Matcher
+ */
 interface MatcherInterface
 {
     /**

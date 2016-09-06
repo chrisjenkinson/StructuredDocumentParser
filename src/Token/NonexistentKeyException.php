@@ -4,6 +4,12 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
-class NonexistentKeyException extends \RuntimeException
+use RuntimeException;
+
+/**
+ * Class NonexistentKeyException
+ * @package chrisjenkinson\StructuredDocumentParser\Token
+ */
+class NonexistentKeyException extends RuntimeException
 {
 }

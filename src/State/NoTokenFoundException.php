@@ -4,7 +4,14 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
-class NoTokenFoundException extends \RuntimeException
+use RuntimeException;
+use Throwable;
+
+/**
+ * Class NoTokenFoundException
+ * @package chrisjenkinson\StructuredDocumentParser\State
+ */
+class NoTokenFoundException extends RuntimeException
 {
     /**
      * @var string
@@ -24,20 +31,19 @@ class NoTokenFoundException extends \RuntimeException
     /**
      * NoTokenFoundException constructor.
      *
-     * @param string          $stateName
-     * @param int             $currentPosition
-     * @param string          $remainingText
-     * @param int             $code
-     * @param \Throwable|null $previous
+     * @param string         $stateName
+     * @param int            $currentPosition
+     * @param string         $remainingText
+     * @param int            $code
+     * @param Throwable|null $previous
      */
     public function __construct(
         string $stateName,
         int $currentPosition,
         string $remainingText,
         int $code = 0,
-        \Throwable $previous = null
-    )
-    {
+        Throwable $previous = null
+    ) {
         $this->stateName       = $stateName;
         $this->currentPosition = $currentPosition;
         $this->remainingText   = $remainingText;

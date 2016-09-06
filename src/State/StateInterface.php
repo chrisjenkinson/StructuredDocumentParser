@@ -8,6 +8,10 @@ use chrisjenkinson\StructuredDocumentParser\Lexer\Cursor;
 use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 
+/**
+ * Interface StateInterface
+ * @package chrisjenkinson\StructuredDocumentParser\State
+ */
 interface StateInterface
 {
     /**

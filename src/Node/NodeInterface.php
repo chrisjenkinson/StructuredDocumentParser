@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
+/**
+ * Interface NodeInterface
+ * @package chrisjenkinson\StructuredDocumentParser\Node
+ */
 interface NodeInterface
 {
     /**
@@ -30,7 +34,7 @@ interface NodeInterface
 
     /**
      * @param string $key
-     * @param $value
+     * @param        $value
      *
      * @return void
      */

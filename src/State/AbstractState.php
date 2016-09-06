@@ -11,6 +11,10 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\Token;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 
+/**
+ * Class AbstractState
+ * @package chrisjenkinson\StructuredDocumentParser\State
+ */
 abstract class AbstractState implements StateInterface
 {
     /**
@@ -58,8 +62,7 @@ abstract class AbstractState implements StateInterface
         string $remainingText,
         array $calledMatchers,
         int $currentPosition
-    )
-    {
+    ) {
 
         if (1 < count($matchedText)) {
             throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText);

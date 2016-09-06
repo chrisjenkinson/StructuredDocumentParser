@@ -25,4 +25,24 @@ class AmbiguousTokenFoundExceptionSpec extends ObjectBehavior
     {
         $this->shouldHaveType(\RuntimeException::class);
     }
+
+    public function it_has_the_state_name()
+    {
+        $this->getStateName()->shouldReturn('stateName');
+    }
+
+    public function it_has_the_text()
+    {
+        $this->getText()->shouldReturn('text');
+    }
+
+    public function it_has_the_called_matchers()
+    {
+        $this->getCalledMatchers()->shouldReturn(['calledMatcher1', 'calledMatcher2']);
+    }
+
+    public function it_has_the_matched_tokens()
+    {
+        $this->getMatchedTokens()->shouldReturn(['MatchedToken1', 'MatchedToken2']);
+    }
 }

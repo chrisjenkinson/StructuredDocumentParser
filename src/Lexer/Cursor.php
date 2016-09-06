@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
+/**
+ * Class Cursor
+ * @package chrisjenkinson\StructuredDocumentParser\Lexer
+ */
 class Cursor
 {
     /**

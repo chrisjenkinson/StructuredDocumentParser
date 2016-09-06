@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
+/**
+ * Class TokenPosition
+ * @package chrisjenkinson\StructuredDocumentParser\Token
+ */
 class TokenPosition
 {
     /**

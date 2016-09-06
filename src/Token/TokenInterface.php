@@ -4,6 +4,10 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
+/**
+ * Interface TokenInterface
+ * @package chrisjenkinson\StructuredDocumentParser\Token
+ */
 interface TokenInterface
 {
     /**

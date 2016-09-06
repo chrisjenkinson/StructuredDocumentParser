@@ -9,7 +9,6 @@ use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 
 /**
  * Class NodeTraverser
- *
  * @package chrisjenkinson\StructuredDocumentParser\NodeTraverser
  */
 class NodeTraverser
@@ -77,9 +76,10 @@ class NodeTraverser
 
     /**
      * @param NodeInterface $node
+     *
      * @return NodeInterface
      */
-    private function runEnterNodeVisitors(NodeInterface $node)
+    private function runEnterNodeVisitors(NodeInterface $node): NodeInterface
     {
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node) {
             if (null === $enter = $nodeVisitor->enterNode($node)) {
@@ -128,7 +128,8 @@ class NodeTraverser
 
     /**
      * @param NodeInterface $node
-     * @return NodeInterface
+     *
+     * @return NodeInterface|bool
      */
     private function runLeaveNodeVisitors(NodeInterface $node)
     {
@@ -166,7 +167,7 @@ class NodeTraverser
             $child = $this->traverseNode($child);
 
             if (self::REMOVE_NODE === $child) {
-                $keysToRemove[] = $key;
+                $keysToRemove[$key] = $key;
             }
 
             if (null !== $child) {

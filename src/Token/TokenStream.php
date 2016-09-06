@@ -4,7 +4,14 @@ declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
-class TokenStream implements \Countable
+use Countable;
+use RuntimeException;
+
+/**
+ * Class TokenStream
+ * @package chrisjenkinson\StructuredDocumentParser\Token
+ */
+class TokenStream implements Countable
 {
     /**
      * @var TokenInterface[]
@@ -47,7 +54,7 @@ class TokenStream implements \Countable
     public function consumeToken(): TokenInterface
     {
         if (!$this->getCurrentToken()) {
-            throw new \RuntimeException('End of token stream');
+            throw new RuntimeException('End of token stream');
         }
 
         return array_shift($this->tokens);
@@ -73,13 +80,13 @@ class TokenStream implements \Countable
     public function expectTokenType(string $expectedType): bool
     {
         if (0 === count($this->tokens)) {
-            throw new \RuntimeException(sprintf('No more tokens; expected %s', $expectedType));
+            throw new RuntimeException(sprintf('No more tokens; expected %s', $expectedType));
         }
 
         $currentToken = $this->getCurrentToken();
 
         if ($expectedType !== $currentToken->getType()) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Token type is %s; expected %s', $currentToken->getType(), $expectedType)
             );
         }
@@ -95,7 +102,7 @@ class TokenStream implements \Countable
     public function expectTokenTypes(array $expectedTypes): bool
     {
         if (0 === count($this->tokens)) {
-            throw new \RuntimeException(sprintf('No more tokens; expected any of %s', implode(', ', $expectedTypes)));
+            throw new RuntimeException(sprintf('No more tokens; expected any of %s', implode(', ', $expectedTypes)));
         }
 
         $currentToken = $this->getCurrentToken();
@@ -108,7 +115,7 @@ class TokenStream implements \Countable
             return true;
         }
 
-        throw new \RuntimeException(
+        throw new RuntimeException(
             sprintf('Token type is %s; expected any of %s', $currentToken->getType(), implode(', ', $expectedTypes))
         );
     }

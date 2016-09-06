@@ -8,7 +8,6 @@ use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 
 /**
  * Class AbstractNodeVisitor
- *
  * @package chrisjenkinson\StructuredDocumentParser\NodeVisitor
  */
 abstract class AbstractNodeVisitor implements NodeVisitorInterface
