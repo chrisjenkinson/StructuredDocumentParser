@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
@@ -38,7 +36,7 @@ class Lexer
      *
      * @return TokenStream
      */
-    public function tokenise(string $text): TokenStream
+    public function tokenise($text)
     {
         $tokens = new TokenStream();
         $cursor = new Cursor($text);
@@ -57,7 +55,7 @@ class Lexer
     /**
      * @return StateInterface
      */
-    public function getState(): StateInterface
+    public function getState()
     {
         return $this->state;
     }
@@ -74,7 +72,7 @@ class Lexer
     /**
      * @return StateInterface
      */
-    public function getLastState(): StateInterface
+    public function getLastState()
     {
         return end($this->previousStates);
     }

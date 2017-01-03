@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
 use chrisjenkinson\StructuredDocumentParser\Finder\RegexFinder;
@@ -32,7 +30,7 @@ class SimpleTextMatcher extends AbstractMatcher
      *
      * @return MatchedText|null
      */
-    public function match(string $text)
+    public function match($text)
     {
         if ($this->finder->find($text)) {
             return new MatchedText($this->finder->getMatches(['all']));

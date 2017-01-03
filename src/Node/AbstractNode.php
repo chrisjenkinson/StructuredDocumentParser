@@ -1,8 +1,9 @@
 <?php
 
-declare (strict_types = 1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
+
+use ReflectionClass;
 
 /**
  * Class AbstractNode
@@ -25,7 +26,7 @@ abstract class AbstractNode implements NodeInterface
      *
      * @return mixed
      */
-    public function getAttribute(string $key)
+    public function getAttribute($key)
     {
         if (array_key_exists($key, $this->attributes)) {
             return $this->attributes[$key];
@@ -39,7 +40,7 @@ abstract class AbstractNode implements NodeInterface
      *
      * @return bool
      */
-    public function hasNode(string $key): bool
+    public function hasNode($key)
     {
         return (array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface);
     }
@@ -49,7 +50,7 @@ abstract class AbstractNode implements NodeInterface
      *
      * @return NodeInterface
      */
-    public function getNode(string $key): NodeInterface
+    public function getNode($key)
     {
         if ($this->hasNode($key)) {
             return $this->nodes[$key];
@@ -61,7 +62,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * @return NodeInterface[]
      */
-    public function getNodes(): array
+    public function getNodes()
     {
         return $this->nodes;
     }
@@ -77,15 +78,15 @@ abstract class AbstractNode implements NodeInterface
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
-        return (new \ReflectionClass($this))->getShortName();
+        return (new ReflectionClass($this))->getShortName();
     }
 
     /**
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return json_encode(['attributes' => $this->attributes, 'nodes' => $this->nodes], JSON_PRETTY_PRINT);
     }
@@ -93,7 +94,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * @return array
      */
-    public function getAttributes(): array
+    public function getAttributes()
     {
         return $this->attributes;
     }
@@ -102,7 +103,7 @@ abstract class AbstractNode implements NodeInterface
      * @param string $key
      * @param        $value
      */
-    public function setAttribute(string $key, $value)
+    public function setAttribute($key, $value)
     {
         $this->attributes[$key] = $value;
     }

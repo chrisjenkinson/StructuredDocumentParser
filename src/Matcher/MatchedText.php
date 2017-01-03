@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
 /**
@@ -30,7 +28,7 @@ class MatchedText
      *
      * @return mixed|null
      */
-    public function get(string $key)
+    public function get($key)
     {
         if (array_key_exists($key, $this->matches)) {
             return $this->matches[$key];
@@ -42,7 +40,7 @@ class MatchedText
     /**
      * @return mixed[]
      */
-    public function getAll(): array
+    public function getAll()
     {
         return $this->matches;
     }

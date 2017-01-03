@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Finder;
 
 /**
@@ -25,7 +23,7 @@ class RegexFinder
      *
      * @param $pattern
      */
-    public function __construct(string $pattern)
+    public function __construct($pattern)
     {
         $this->pattern = $pattern;
     }
@@ -35,7 +33,7 @@ class RegexFinder
      *
      * @return bool
      */
-    public function find(string $text): bool
+    public function find($text)
     {
         if (preg_match($this->pattern, $text, $matches)) {
             $this->matches = $matches;
@@ -51,7 +49,7 @@ class RegexFinder
      *
      * @return array
      */
-    public function getMatches(array $keys): array
+    public function getMatches(array $keys)
     {
         return array_intersect_key($this->matches, array_flip($keys));
     }

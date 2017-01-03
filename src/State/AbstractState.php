@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
 use chrisjenkinson\StructuredDocumentParser\Lexer\Cursor;
@@ -10,6 +8,7 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\Token;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
+use ReflectionClass;
 
 /**
  * Class AbstractState
@@ -57,13 +56,8 @@ abstract class AbstractState implements StateInterface
         return new Token(substr($matcher, 0, -7), $matchedText->getAll());
     }
 
-    public function guardAgainstWrongNumberOfMatches(
-        array $matchedText,
-        string $remainingText,
-        array $calledMatchers,
-        int $currentPosition
-    ) {
-
+    public function guardAgainstWrongNumberOfMatches(array $matchedText, $remainingText, array $calledMatchers, $currentPosition)
+    {
         if (1 < count($matchedText)) {
             throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText);
         }
@@ -78,7 +72,7 @@ abstract class AbstractState implements StateInterface
      *
      * @return array
      */
-    public function runMatchers(string $text): array
+    public function runMatchers($text)
     {
         $matchedTokens  = [];
         $calledMatchers = [];
@@ -102,8 +96,8 @@ abstract class AbstractState implements StateInterface
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
-        return (new \ReflectionClass($this))->getShortName();
+        return (new ReflectionClass($this))->getShortName();
     }
 }

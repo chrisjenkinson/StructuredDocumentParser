@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
 /**
@@ -15,10 +13,10 @@ interface MatcherInterface
      *
      * @return MatchedText|null
      */
-    public function match(string $text);
+    public function match($text);
 
     /**
      * @return string
      */
-    public function getName(): string;
+    public function getName();
 }

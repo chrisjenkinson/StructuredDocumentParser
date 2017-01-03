@@ -1,8 +1,8 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Token;
+
+use RuntimeException;
 
 /**
  * Class Token
@@ -31,7 +31,7 @@ class Token implements TokenInterface
      * @param string $type
      * @param mixed  $value
      */
-    public function __construct(string $type, $value)
+    public function __construct($type, $value)
     {
         $this->type  = $type;
         $this->value = $value;
@@ -40,7 +40,7 @@ class Token implements TokenInterface
     /**
      * @return mixed[]
      */
-    public function getValues(): array
+    public function getValues()
     {
         return $this->value;
     }
@@ -48,7 +48,7 @@ class Token implements TokenInterface
     /**
      * @return TokenPosition
      */
-    public function getPosition(): TokenPosition
+    public function getPosition()
     {
         return $this->position;
     }
@@ -66,7 +66,7 @@ class Token implements TokenInterface
      *
      * @return bool
      */
-    public function hasKey(string $key): bool
+    public function hasKey($key)
     {
         return array_key_exists($key, $this->value);
     }
@@ -74,7 +74,7 @@ class Token implements TokenInterface
     /**
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return sprintf('%s (%s)', $this->getType(), trim($this->getValue('all')));
     }
@@ -82,7 +82,7 @@ class Token implements TokenInterface
     /**
      * @return string
      */
-    public function getType(): string
+    public function getType()
     {
         return $this->type;
     }
@@ -92,10 +92,10 @@ class Token implements TokenInterface
      *
      * @return mixed
      */
-    public function getValue(string $key)
+    public function getValue($key)
     {
         if (!array_key_exists($key, $this->value)) {
-            throw new \RuntimeException(sprintf('No such key %s exists', $key));
+            throw new RuntimeException(sprintf('No such key %s exists', $key));
         }
 
         return $this->value[$key];

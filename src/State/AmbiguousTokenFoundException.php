@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
 use RuntimeException;
@@ -44,13 +42,14 @@ class AmbiguousTokenFoundException extends RuntimeException
      * @param Throwable|null $previous
      */
     public function __construct(
-        string $stateName,
-        string $text,
+        $stateName,
+        $text,
         array $calledMatchers,
         array $matchedTokens,
-        int $code = 0,
+        $code = 0,
         Throwable $previous = null
-    ) {
+    )
+    {
         $this->stateName      = $stateName;
         $this->text           = $text;
         $this->calledMatchers = $calledMatchers;
@@ -70,7 +69,7 @@ class AmbiguousTokenFoundException extends RuntimeException
     /**
      * @return array
      */
-    public function getCalledMatchers(): array
+    public function getCalledMatchers()
     {
         return $this->calledMatchers;
     }
@@ -78,7 +77,7 @@ class AmbiguousTokenFoundException extends RuntimeException
     /**
      * @return array
      */
-    public function getMatchedTokens(): array
+    public function getMatchedTokens()
     {
         return $this->matchedTokens;
     }
@@ -86,7 +85,7 @@ class AmbiguousTokenFoundException extends RuntimeException
     /**
      * @return string
      */
-    public function getStateName(): string
+    public function getStateName()
     {
         return $this->stateName;
     }
@@ -94,7 +93,7 @@ class AmbiguousTokenFoundException extends RuntimeException
     /**
      * @return string
      */
-    public function getText(): string
+    public function getText()
     {
         return $this->text;
     }

@@ -1,8 +1,8 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
+
+use ReflectionClass;
 
 /**
  * Class AbstractMatcher
@@ -13,8 +13,8 @@ abstract class AbstractMatcher implements MatcherInterface
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
-        return (new \ReflectionClass($this))->getShortName();
+        return (new ReflectionClass($this))->getShortName();
     }
 }

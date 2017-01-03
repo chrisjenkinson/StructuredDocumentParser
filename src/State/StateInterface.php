@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
 use chrisjenkinson\StructuredDocumentParser\Lexer\Cursor;
@@ -27,10 +25,10 @@ interface StateInterface
      *
      * @return array
      */
-    public function runMatchers(string $text): array;
+    public function runMatchers($text);
 
     /**
      * @return string
      */
-    public function getName(): string;
+    public function getName();
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
 use RuntimeException;
@@ -37,13 +35,8 @@ class NoTokenFoundException extends RuntimeException
      * @param int            $code
      * @param Throwable|null $previous
      */
-    public function __construct(
-        string $stateName,
-        int $currentPosition,
-        string $remainingText,
-        int $code = 0,
-        Throwable $previous = null
-    ) {
+    public function __construct($stateName, $currentPosition, $remainingText, $code = 0, Throwable $previous = null)
+    {
         $this->stateName       = $stateName;
         $this->currentPosition = $currentPosition;
         $this->remainingText   = $remainingText;
@@ -61,7 +54,7 @@ class NoTokenFoundException extends RuntimeException
     /**
      * @return string
      */
-    public function getStateName(): string
+    public function getStateName()
     {
         return $this->stateName;
     }
@@ -69,7 +62,7 @@ class NoTokenFoundException extends RuntimeException
     /**
      * @return int
      */
-    public function getCurrentPosition(): int
+    public function getCurrentPosition()
     {
         return $this->currentPosition;
     }
@@ -77,7 +70,7 @@ class NoTokenFoundException extends RuntimeException
     /**
      * @return string
      */
-    public function getRemainingText(): string
+    public function getRemainingText()
     {
         return $this->remainingText;
     }

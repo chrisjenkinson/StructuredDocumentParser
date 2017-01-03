@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
 use Countable;
@@ -29,7 +27,7 @@ class TokenStream implements Countable
     /**
      * @return int
      */
-    public function count(): int
+    public function count()
     {
         return count($this->tokens);
     }
@@ -39,7 +37,7 @@ class TokenStream implements Countable
      *
      * @return null|TokenInterface
      */
-    public function lookAhead(int $distance = 1)
+    public function lookAhead($distance = 1)
     {
         if (!array_key_exists($distance, $this->tokens)) {
             return null;
@@ -51,7 +49,7 @@ class TokenStream implements Countable
     /**
      * @return TokenInterface
      */
-    public function consumeToken(): TokenInterface
+    public function consumeToken()
     {
         if (!$this->getCurrentToken()) {
             throw new RuntimeException('End of token stream');
@@ -77,7 +75,7 @@ class TokenStream implements Countable
      *
      * @return true
      */
-    public function expectTokenType(string $expectedType): bool
+    public function expectTokenType($expectedType)
     {
         if (0 === count($this->tokens)) {
             throw new RuntimeException(sprintf('No more tokens; expected %s', $expectedType));
@@ -99,7 +97,7 @@ class TokenStream implements Countable
      *
      * @return true
      */
-    public function expectTokenTypes(array $expectedTypes): bool
+    public function expectTokenTypes(array $expectedTypes)
     {
         if (0 === count($this->tokens)) {
             throw new RuntimeException(sprintf('No more tokens; expected any of %s', implode(', ', $expectedTypes)));
@@ -107,7 +105,7 @@ class TokenStream implements Countable
 
         $currentToken = $this->getCurrentToken();
 
-        $expected = array_filter($expectedTypes, function (string $expectedType) use ($currentToken) {
+        $expected = array_filter($expectedTypes, function ($expectedType) use ($currentToken) {
             return ($expectedType === $currentToken->getType());
         });
 
@@ -123,7 +121,7 @@ class TokenStream implements Countable
     /**
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return implode("\n", $this->tokens);
     }

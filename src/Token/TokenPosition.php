@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
 /**
@@ -26,7 +24,7 @@ class TokenPosition
      * @param int $line
      * @param int $column
      */
-    public function __construct(int $line, int $column)
+    public function __construct($line, $column)
     {
         $this->line   = $line;
         $this->column = $column;
@@ -35,7 +33,7 @@ class TokenPosition
     /**
      * @return int
      */
-    public function getLine(): int
+    public function getLine()
     {
         return $this->line;
     }
@@ -43,7 +41,7 @@ class TokenPosition
     /**
      * @return int
      */
-    public function getColumn(): int
+    public function getColumn()
     {
         return $this->column;
     }

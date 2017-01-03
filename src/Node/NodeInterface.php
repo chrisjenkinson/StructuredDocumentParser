@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
 /**
@@ -13,19 +11,19 @@ interface NodeInterface
     /**
      * @return string
      */
-    public function getName(): string;
+    public function getName();
 
     /**
      * @return string
      */
-    public function __toString(): string;
+    public function __toString();
 
     /**
      * @param string $key
      *
      * @return mixed
      */
-    public function getAttribute(string $key);
+    public function getAttribute($key);
 
     /**
      * @return mixed
@@ -38,26 +36,26 @@ interface NodeInterface
      *
      * @return void
      */
-    public function setAttribute(string $key, $value);
+    public function setAttribute($key, $value);
 
     /**
      * @param string $key
      *
      * @return bool
      */
-    public function hasNode(string $key): bool;
+    public function hasNode($key);
 
     /**
      * @param string $key
      *
      * @return NodeInterface
      */
-    public function getNode(string $key): NodeInterface;
+    public function getNode($key);
 
     /**
      * @return NodeInterface[]
      */
-    public function getNodes(): array;
+    public function getNodes();
 
     /**
      * @param NodeInterface $node

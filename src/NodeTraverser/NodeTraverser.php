@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace chrisjenkinson\StructuredDocumentParser\NodeTraverser;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
@@ -79,7 +77,7 @@ class NodeTraverser
      *
      * @return NodeInterface
      */
-    private function runEnterNodeVisitors(NodeInterface $node): NodeInterface
+    private function runEnterNodeVisitors(NodeInterface $node)
     {
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node) {
             if (null === $enter = $nodeVisitor->enterNode($node)) {
@@ -155,7 +153,7 @@ class NodeTraverser
      *
      * @return array
      */
-    public function traverseChildren(array $children): array
+    public function traverseChildren(array $children)
     {
         $keysToRemove = [];
 
