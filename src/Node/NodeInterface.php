@@ -63,4 +63,6 @@ interface NodeInterface
      * @return void
      */
     public function addNode(NodeInterface $node);
+
+    public function removeNode(NodeInterface $node);
 }

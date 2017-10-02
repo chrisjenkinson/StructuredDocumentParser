@@ -53,6 +53,7 @@ class NodeTraverserSpec extends ObjectBehavior
     {
         $root->getNodes()->willReturn([$node]);
         $root->getAttributes()->willReturn([]);
+        $root->removeNode($node)->shouldBeCalled();
 
         $node->getNodes()->willReturn([]);
         $node->getAttributes()->willReturn([]);

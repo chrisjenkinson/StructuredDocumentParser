@@ -4,6 +4,7 @@
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
 use ReflectionClass;
+use RuntimeException;
 
 /**
  * Class AbstractNode
@@ -32,7 +33,7 @@ abstract class AbstractNode implements NodeInterface
             return $this->attributes[$key];
         }
 
-        throw new \RuntimeException(sprintf('No such attribute "%s".', $key));
+        throw new RuntimeException(sprintf('No such attribute "%s".', $key));
     }
 
     /**
@@ -56,7 +57,7 @@ abstract class AbstractNode implements NodeInterface
             return $this->nodes[$key];
         }
 
-        throw new \RuntimeException(sprintf('No such node "%s', $key));
+        throw new RuntimeException(sprintf('No such node "%s"', $key));
     }
 
     /**
@@ -73,6 +74,11 @@ abstract class AbstractNode implements NodeInterface
     public function addNode(NodeInterface $node)
     {
         $this->nodes[$node->getName()] = $node;
+    }
+
+    public function removeNode(NodeInterface $node)
+    {
+        unset($this->nodes[$node->getName()]);
     }
 
     /**

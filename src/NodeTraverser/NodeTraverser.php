@@ -96,10 +96,15 @@ class NodeTraverser
     private function runTraverseNodeOnSubNodes(NodeInterface $node, array $children)
     {
         array_map(function (NodeInterface $child) use (&$node) {
+            $originalChild = clone $child;
             $child = $this->traverseNode($child);
 
             if (null === $child) {
                 return;
+            }
+
+            if (get_class($child) !== get_class($originalChild)) {
+                $node->removeNode($originalChild);
             }
 
             $node->addNode($child);
