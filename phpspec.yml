@@ -6,7 +6,7 @@ suites:
 formatter.name: pretty
 
 extensions:
-  PhpSpecCodeCoverage\CodeCoverageExtension:
+  LeanPHP\PhpSpec\CodeCoverage\CodeCoverageExtension:
     format:
       - clover
       - html

@@ -2,10 +2,15 @@
   "name": "chrisjenkinson/structured-document-parser",
   "description": "A structured document parser.",
   "type": "library",
+  "require": {
+    "php": "^7.1",
+    "ext-libxml": "*"
+  },
   "require-dev": {
+    "ext-mbstring": "*",
     "phpspec/phpspec": "*",
-    "phpspec/prophecy": "*",
-    "henrikbjorn/phpspec-code-coverage": "*"
+    "phpunit/phpunit": "*",
+    "leanphp/phpspec-code-coverage": "*"
   },
   "license": "MIT",
   "authors": [
