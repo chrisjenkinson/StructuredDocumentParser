@@ -15,13 +15,10 @@ class NodeTraverserTest extends TestCase
 {
     public function testItReplacesANode(): void
     {
-        $traverser = new NodeTraverser();
-
+        $traverser   = new NodeTraverser();
         $nodeVisitor = new TestNodeVisitor();
-
-        $node = new OriginalNode();
-
-        $child = new ChildNode();
+        $node        = new OriginalNode();
+        $child       = new ChildNode();
 
         $node->addNode($child);
 
@@ -33,6 +30,28 @@ class NodeTraverserTest extends TestCase
 
         Assert::assertFalse($node->hasNode('ChildNode'));
         Assert::assertInstanceOf(NodeFromVisitor::class, $node->getNode('NodeFromVisitor'));
+    }
+
+    public function testItCanChangeGrandchildrenNodes(): void
+    {
+        $traverser   = new NodeTraverser();
+        $nodeVisitor = new Test2NodeVisitor();
+        $node        = new OriginalNode();
+        $child       = new ChildNode();
+        $grandchild  = new GrandchildNode();
+
+        $grandchild->setAttribute('testAttribute', 'original');
+
+        $node->addNode($child);
+        $child->addNode($grandchild);
+
+        $traverser->addVisitor($nodeVisitor);
+
+        Assert::assertEquals('original', $node->getNode('ChildNode')->getNode('GrandchildNode')->getAttribute('testAttribute'));
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertEquals('replacement', $node->getNode('ChildNode')->getNode('GrandchildNode')->getAttribute('testAttribute'));
     }
 }
 
@@ -48,6 +67,24 @@ class TestNodeVisitor extends AbstractNodeVisitor
     }
 }
 
+class Test2NodeVisitor extends AbstractNodeVisitor
+{
+    public function enterNode(NodeInterface $node): ?NodeInterface
+    {
+        if (!$node instanceof ChildNode) {
+            return null;
+        }
+
+        $childNode      = new ChildNode();
+        $grandchildNode = new GrandchildNode();
+
+        $childNode->addNode($grandchildNode);
+        $grandchildNode->setAttribute('testAttribute', 'replacement');
+
+        return $childNode;
+    }
+}
+
 class NodeFromVisitor extends AbstractNode
 {
 }
@@ -57,5 +94,9 @@ class OriginalNode extends AbstractNode
 }
 
 class ChildNode extends AbstractNode
+{
+}
+
+class GrandchildNode extends AbstractNode
 {
 }

@@ -54,10 +54,10 @@ class NodeTraverser
      */
     public function traverseNode(NodeInterface $node)
     {
+        $node = $this->runEnterNodeVisitors($node);
+
         $children   = $node->getNodes();
         $attributes = $node->getAttributes();
-
-        $node = $this->runEnterNodeVisitors($node);
 
         $this->runTraverseNodeOnSubNodes($node, $children);
         $this->runTraverseChildrenOnAttributes($node, $attributes);
