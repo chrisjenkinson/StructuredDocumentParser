@@ -1,15 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
 use chrisjenkinson\StructuredDocumentParser\Lexer\Cursor;
 use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 
-/**
- * Interface StateInterface
- * @package chrisjenkinson\StructuredDocumentParser\State
- */
 interface StateInterface
 {
     /**
@@ -20,15 +18,7 @@ interface StateInterface
      */
     public function findMatchingToken(Lexer $lexer, Cursor $cursor);
 
-    /**
-     * @param string $text
-     *
-     * @return array
-     */
-    public function runMatchers($text);
+    public function runMatchers(string $text): array;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 }

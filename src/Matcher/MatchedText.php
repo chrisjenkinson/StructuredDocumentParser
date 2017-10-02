@@ -1,11 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
-/**
- * Class MatchedText
- * @package chrisjenkinson\StructuredDocumentParser\Matcher
- */
 class MatchedText
 {
     /**
@@ -13,11 +11,6 @@ class MatchedText
      */
     private $matches;
 
-    /**
-     * MatchedText constructor.
-     *
-     * @param array $matches
-     */
     public function __construct(array $matches)
     {
         $this->matches = $matches;
@@ -28,7 +21,7 @@ class MatchedText
      *
      * @return mixed|null
      */
-    public function get($key)
+    public function get(string $key)
     {
         if (array_key_exists($key, $this->matches)) {
             return $this->matches[$key];
@@ -37,10 +30,7 @@ class MatchedText
         return null;
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->matches;
     }

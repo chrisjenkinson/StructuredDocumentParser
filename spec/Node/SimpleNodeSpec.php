@@ -1,23 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace spec\chrisjenkinson\StructuredDocumentParser\Node;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use PhpSpec\ObjectBehavior;
+use RuntimeException;
 
 class SimpleNodeSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
-    {
-        $this->shouldHaveType('chrisjenkinson\StructuredDocumentParser\Node\SimpleNode');
-    }
-
-    public function it_has_a_name()
+    public function it_has_a_name(): void
     {
         $this->getName()->shouldReturn('SimpleNode');
     }
 
-    public function it_has_attributes()
+    public function it_has_attributes(): void
     {
         $this->setAttribute('something', 'result');
 
@@ -25,12 +23,12 @@ class SimpleNodeSpec extends ObjectBehavior
         $this->getAttributes()->shouldReturn(['something' => 'result']);
     }
 
-    public function it_throws_exception_if_no_such_attribute_exists()
+    public function it_throws_exception_if_no_such_attribute_exists(): void
     {
-        $this->shouldThrow(\RuntimeException::class)->duringGetAttribute('nonexistent');
+        $this->shouldThrow(RuntimeException::class)->duringGetAttribute('nonexistent');
     }
 
-    public function it_has_nodes(NodeInterface $node)
+    public function it_has_nodes(NodeInterface $node): void
     {
         $node->getName()->willReturn('ChildNode');
 
@@ -40,12 +38,12 @@ class SimpleNodeSpec extends ObjectBehavior
         $this->getNodes()->shouldReturn(['ChildNode' => $node]);
     }
 
-    public function it_throws_exception_if_no_such_child_exists()
+    public function it_throws_exception_if_no_such_child_exists(): void
     {
-        $this->shouldThrow(\RuntimeException::class)->duringGetNode('nonexistent');
+        $this->shouldThrow(RuntimeException::class)->duringGetNode('nonexistent');
     }
 
-    public function it_exports_a_tree_as_a_string(NodeInterface $node)
+    public function it_exports_a_tree_as_a_string(NodeInterface $node): void
     {
         $node->getName()->willReturn('ChildNode');
         $node->__toString()->willReturn('');

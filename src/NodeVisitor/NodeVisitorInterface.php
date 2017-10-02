@@ -1,40 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\NodeVisitor;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 
-/**
- * Interface NodeVisitorInterface
- * @package chrisjenkinson\StructuredDocumentParser\NodeVisitor
- */
 interface NodeVisitorInterface
 {
-    /**
-     * @param NodeInterface $node
-     *
-     * @return NodeInterface|null
-     */
-    public function beforeTraverse(NodeInterface $node);
+    public function beforeTraverse(NodeInterface $node): ?NodeInterface;
+
+    public function afterTraverse(NodeInterface $node): ?NodeInterface;
+
+    public function enterNode(NodeInterface $node): ?NodeInterface;
 
     /**
      * @param NodeInterface $node
      *
-     * @return NodeInterface|null
-     */
-    public function afterTraverse(NodeInterface $node);
-
-    /**
-     * @param NodeInterface $node
-     *
-     * @return NodeInterface|null
-     */
-    public function enterNode(NodeInterface $node);
-
-    /**
-     * @param NodeInterface $node
-     *
-     * @return NodeInterface|null
+     * @return NodeInterface|bool|null
      */
     public function leaveNode(NodeInterface $node);
 }

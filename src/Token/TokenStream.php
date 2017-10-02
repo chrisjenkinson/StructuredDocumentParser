@@ -1,14 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
 use Countable;
 use RuntimeException;
 
-/**
- * Class TokenStream
- * @package chrisjenkinson\StructuredDocumentParser\Token
- */
 class TokenStream implements Countable
 {
     /**
@@ -16,28 +14,22 @@ class TokenStream implements Countable
      */
     private $tokens = [];
 
-    /**
-     * @param TokenInterface $token
-     */
-    public function add(TokenInterface $token)
+    public function __toString(): string
+    {
+        return implode("\n", $this->tokens);
+    }
+
+    public function add(TokenInterface $token): void
     {
         $this->tokens[] = $token;
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
         return count($this->tokens);
     }
 
-    /**
-     * @param int $distance
-     *
-     * @return null|TokenInterface
-     */
-    public function lookAhead($distance = 1)
+    public function lookAhead(int $distance = 1): ?TokenInterface
     {
         if (!array_key_exists($distance, $this->tokens)) {
             return null;
@@ -46,10 +38,7 @@ class TokenStream implements Countable
         return $this->tokens[$distance];
     }
 
-    /**
-     * @return TokenInterface
-     */
-    public function consumeToken()
+    public function consumeToken(): TokenInterface
     {
         if (!$this->getCurrentToken()) {
             throw new RuntimeException('End of token stream');
@@ -58,10 +47,7 @@ class TokenStream implements Countable
         return array_shift($this->tokens);
     }
 
-    /**
-     * @return null|TokenInterface
-     */
-    public function getCurrentToken()
+    public function getCurrentToken(): ?TokenInterface
     {
         if (0 === count($this->tokens)) {
             return null;
@@ -75,7 +61,7 @@ class TokenStream implements Countable
      *
      * @return true
      */
-    public function expectTokenType($expectedType)
+    public function expectTokenType(string $expectedType): bool
     {
         if (0 === count($this->tokens)) {
             throw new RuntimeException(sprintf('No more tokens; expected %s', $expectedType));
@@ -97,7 +83,7 @@ class TokenStream implements Countable
      *
      * @return true
      */
-    public function expectTokenTypes(array $expectedTypes)
+    public function expectTokenTypes(array $expectedTypes): bool
     {
         if (0 === count($this->tokens)) {
             throw new RuntimeException(sprintf('No more tokens; expected any of %s', implode(', ', $expectedTypes)));
@@ -106,7 +92,7 @@ class TokenStream implements Countable
         $currentToken = $this->getCurrentToken();
 
         $expected = array_filter($expectedTypes, function ($expectedType) use ($currentToken) {
-            return ($expectedType === $currentToken->getType());
+            return $expectedType === $currentToken->getType();
         });
 
         if (count($expected) >= 1) {
@@ -116,13 +102,5 @@ class TokenStream implements Countable
         throw new RuntimeException(
             sprintf('Token type is %s; expected any of %s', $currentToken->getType(), implode(', ', $expectedTypes))
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return implode("\n", $this->tokens);
     }
 }

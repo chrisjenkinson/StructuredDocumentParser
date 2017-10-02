@@ -1,14 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 
-/**
- * Class Lexer
- * @package chrisjenkinson\StructuredDocumentParser\Lexer
- */
 class Lexer
 {
     /**
@@ -21,22 +19,12 @@ class Lexer
      */
     private $previousStates = [];
 
-    /**
-     * Lexer constructor.
-     *
-     * @param StateInterface $initialState
-     */
     public function __construct(StateInterface $initialState)
     {
         $this->state = $initialState;
     }
 
-    /**
-     * @param string $text
-     *
-     * @return TokenStream
-     */
-    public function tokenise($text)
+    public function tokenise(string $text): TokenStream
     {
         $tokens = new TokenStream();
         $cursor = new Cursor($text);
@@ -46,33 +34,24 @@ class Lexer
 
             $tokens->add($token);
 
-            $cursor->advance(strlen($token->getValue('all')));
+            $cursor->advance(mb_strlen($token->getValue('all')));
         }
 
         return $tokens;
     }
 
-    /**
-     * @return StateInterface
-     */
-    public function getState()
+    public function getState(): StateInterface
     {
         return $this->state;
     }
 
-    /**
-     * @param StateInterface $state
-     */
-    public function setState(StateInterface $state)
+    public function setState(StateInterface $state): void
     {
         $this->previousStates[] = $this->state;
         $this->state            = $state;
     }
 
-    /**
-     * @return StateInterface
-     */
-    public function getLastState()
+    public function getLastState(): StateInterface
     {
         return end($this->previousStates);
     }

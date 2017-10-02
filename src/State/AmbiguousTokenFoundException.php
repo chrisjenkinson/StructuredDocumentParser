@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
+use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use RuntimeException;
 use Throwable;
 
-/**
- * Class AmbiguousTokenFoundException
- * @package chrisjenkinson\StructuredDocumentParser\State
- */
 class AmbiguousTokenFoundException extends RuntimeException
 {
     /**
@@ -31,25 +30,14 @@ class AmbiguousTokenFoundException extends RuntimeException
      */
     private $matchedTokens;
 
-    /**
-     * AmbiguousTokenFoundException constructor.
-     *
-     * @param string         $stateName
-     * @param string         $text
-     * @param array          $calledMatchers
-     * @param array          $matchedTokens
-     * @param int            $code
-     * @param Throwable|null $previous
-     */
     public function __construct(
-        $stateName,
-        $text,
+        string $stateName,
+        string $text,
         array $calledMatchers,
         array $matchedTokens,
-        $code = 0,
+        int $code = 0,
         Throwable $previous = null
-    )
-    {
+    ) {
         $this->stateName      = $stateName;
         $this->text           = $text;
         $this->calledMatchers = $calledMatchers;
@@ -60,40 +48,30 @@ class AmbiguousTokenFoundException extends RuntimeException
             $stateName,
             $text,
             implode(', ', $calledMatchers),
-            var_export($matchedTokens, true)
+            var_export(array_map(function (MatchedText $matchedText): array {
+                return $matchedText->getAll();
+            }, $matchedTokens), true)
         );
 
         parent::__construct($message, $code, $previous);
     }
 
-    /**
-     * @return array
-     */
-    public function getCalledMatchers()
+    public function getCalledMatchers(): array
     {
         return $this->calledMatchers;
     }
 
-    /**
-     * @return array
-     */
-    public function getMatchedTokens()
+    public function getMatchedTokens(): array
     {
         return $this->matchedTokens;
     }
 
-    /**
-     * @return string
-     */
-    public function getStateName()
+    public function getStateName(): string
     {
         return $this->stateName;
     }
 
-    /**
-     * @return string
-     */
-    public function getText()
+    public function getText(): string
     {
         return $this->text;
     }

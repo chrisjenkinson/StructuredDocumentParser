@@ -1,15 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
 use ReflectionClass;
 use RuntimeException;
 
-/**
- * Class AbstractNode
- * @package chrisjenkinson\StructuredDocumentParser\Node
- */
 abstract class AbstractNode implements NodeInterface
 {
     /**
@@ -22,12 +19,17 @@ abstract class AbstractNode implements NodeInterface
      */
     protected $nodes = [];
 
+    public function __toString(): string
+    {
+        return json_encode(['attributes' => $this->attributes, 'nodes' => $this->nodes], JSON_PRETTY_PRINT);
+    }
+
     /**
      * @param string $key
      *
      * @return mixed
      */
-    public function getAttribute($key)
+    public function getAttribute(string $key)
     {
         if (array_key_exists($key, $this->attributes)) {
             return $this->attributes[$key];
@@ -36,22 +38,12 @@ abstract class AbstractNode implements NodeInterface
         throw new RuntimeException(sprintf('No such attribute "%s".', $key));
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasNode($key)
+    public function hasNode(string $key): bool
     {
-        return (array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface);
+        return array_key_exists($key, $this->nodes) && $this->nodes[$key] instanceof NodeInterface;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return NodeInterface
-     */
-    public function getNode($key)
+    public function getNode(string $key): NodeInterface
     {
         if ($this->hasNode($key)) {
             return $this->nodes[$key];
@@ -63,53 +55,32 @@ abstract class AbstractNode implements NodeInterface
     /**
      * @return NodeInterface[]
      */
-    public function getNodes()
+    public function getNodes(): array
     {
         return $this->nodes;
     }
 
-    /**
-     * @param NodeInterface $node
-     */
-    public function addNode(NodeInterface $node)
+    public function addNode(NodeInterface $node): void
     {
         $this->nodes[$node->getName()] = $node;
     }
 
-    public function removeNode(NodeInterface $node)
+    public function removeNode(NodeInterface $node): void
     {
         unset($this->nodes[$node->getName()]);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return (new ReflectionClass($this))->getShortName();
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return json_encode(['attributes' => $this->attributes, 'nodes' => $this->nodes], JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * @return array
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * @param string $key
-     * @param        $value
-     */
-    public function setAttribute($key, $value)
+    public function setAttribute(string $key, $value): void
     {
         $this->attributes[$key] = $value;
     }

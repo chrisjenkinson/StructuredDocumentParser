@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__ . '/src')
+    ->in(__DIR__ . '/spec')
+    ->in(__DIR__ . '/tests')
+    ->append([__FILE__]);
+
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules(
+        [
+            '@PSR2'                   => true,
+            '@Symfony'                => true,
+            '@Symfony:risky'          => true,
+            '@PHP71Migration'         => true,
+            '@PHP71Migration:risky'   => true,
+            'array_syntax'            => ['syntax' => 'short'],
+            'binary_operator_spaces'  => ['align_double_arrow' => true, 'align_equals' => true],
+            'concat_space'            => ['spacing' => 'one'],
+            'mb_str_functions'        => true,
+            'ordered_class_elements'  => true,
+            'phpdoc_var_without_name' => false,
+        ]
+    )
+    ->setFinder($finder);

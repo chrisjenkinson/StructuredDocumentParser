@@ -1,27 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\NodeTraverser;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 
-/**
- * Class NodeTraverser
- * @package chrisjenkinson\StructuredDocumentParser\NodeTraverser
- */
 class NodeTraverser
 {
-    const REMOVE_NODE = false;
+    public const REMOVE_NODE = false;
 
     /**
      * @var NodeVisitorInterface[]
      */
     private $visitors = [];
 
-    /**
-     * @param NodeVisitorInterface $visitor
-     */
-    public function addVisitor(NodeVisitorInterface $visitor)
+    public function addVisitor(NodeVisitorInterface $visitor): void
     {
         $this->visitors[] = $visitor;
     }
@@ -33,7 +28,7 @@ class NodeTraverser
      */
     public function traverse(NodeInterface $node)
     {
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node) {
+        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $before = $nodeVisitor->beforeTraverse($node)) {
                 return;
             }
@@ -42,7 +37,7 @@ class NodeTraverser
 
         $node = $this->traverseNode($node);
 
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node) {
+        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $after = $nodeVisitor->afterTraverse($node)) {
                 return;
             }
@@ -72,14 +67,32 @@ class NodeTraverser
         return $node;
     }
 
-    /**
-     * @param NodeInterface $node
-     *
-     * @return NodeInterface
-     */
-    private function runEnterNodeVisitors(NodeInterface $node)
+    public function traverseChildren(array $children): array
     {
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node) {
+        $keysToRemove = [];
+
+        array_walk($children, function ($child, $key) use (&$keysToRemove, &$children): void {
+            if (!$child instanceof NodeInterface) {
+                return;
+            }
+
+            $child = $this->traverseNode($child);
+
+            if (self::REMOVE_NODE === $child) {
+                $keysToRemove[$key] = $key;
+            }
+
+            if (null !== $child) {
+                $children[$key] = $child;
+            }
+        });
+
+        return array_diff_key($children, $keysToRemove);
+    }
+
+    private function runEnterNodeVisitors(NodeInterface $node): NodeInterface
+    {
+        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $enter = $nodeVisitor->enterNode($node)) {
                 return;
             }
@@ -93,31 +106,26 @@ class NodeTraverser
      * @param NodeInterface   $node
      * @param NodeInterface[] $children
      */
-    private function runTraverseNodeOnSubNodes(NodeInterface $node, array $children)
+    private function runTraverseNodeOnSubNodes(NodeInterface $node, array $children): void
     {
-        array_map(function (NodeInterface $child) use (&$node) {
-            $originalChild = clone $child;
-            $child = $this->traverseNode($child);
+        array_map(function (NodeInterface $child) use (&$node): void {
+            $newChild = $this->traverseNode($child);
 
             if (null === $child) {
                 return;
             }
 
-            if (get_class($child) !== get_class($originalChild)) {
-                $node->removeNode($originalChild);
+            if (get_class($newChild) !== get_class($child)) {
+                $node->removeNode($child);
             }
 
-            $node->addNode($child);
+            $node->addNode($newChild);
         }, $children);
     }
 
-    /**
-     * @param NodeInterface $node
-     * @param array         $attributes
-     */
-    private function runTraverseChildrenOnAttributes(NodeInterface $node, array $attributes)
+    private function runTraverseChildrenOnAttributes(NodeInterface $node, array $attributes): void
     {
-        array_walk($attributes, function ($attribute, $key) use (&$node) {
+        array_walk($attributes, function ($attribute, $key) use (&$node): void {
             if (!is_array($attribute)) {
                 return;
             }
@@ -136,7 +144,7 @@ class NodeTraverser
      */
     private function runLeaveNodeVisitors(NodeInterface $node)
     {
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node) {
+        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (self::REMOVE_NODE === $node) {
                 return;
             }
@@ -151,33 +159,5 @@ class NodeTraverser
         }, $this->visitors);
 
         return $node;
-    }
-
-    /**
-     * @param array $children
-     *
-     * @return array
-     */
-    public function traverseChildren(array $children)
-    {
-        $keysToRemove = [];
-
-        array_walk($children, function ($child, $key) use (&$keysToRemove, &$children) {
-            if (!$child instanceof NodeInterface) {
-                return;
-            }
-
-            $child = $this->traverseNode($child);
-
-            if (self::REMOVE_NODE === $child) {
-                $keysToRemove[$key] = $key;
-            }
-
-            if (null !== $child) {
-                $children[$key] = $child;
-            }
-        });
-
-        return array_diff_key($children, $keysToRemove);
     }
 }

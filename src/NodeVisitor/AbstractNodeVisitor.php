@@ -1,19 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\NodeVisitor;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 
-/**
- * Class AbstractNodeVisitor
- * @package chrisjenkinson\StructuredDocumentParser\NodeVisitor
- */
 abstract class AbstractNodeVisitor implements NodeVisitorInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function beforeTraverse(NodeInterface $node)
+    public function beforeTraverse(NodeInterface $node): ?NodeInterface
     {
         return null;
     }
@@ -21,7 +19,7 @@ abstract class AbstractNodeVisitor implements NodeVisitorInterface
     /**
      * {@inheritdoc}
      */
-    public function afterTraverse(NodeInterface $node)
+    public function afterTraverse(NodeInterface $node): ?NodeInterface
     {
         return null;
     }
@@ -29,7 +27,7 @@ abstract class AbstractNodeVisitor implements NodeVisitorInterface
     /**
      * {@inheritdoc}
      */
-    public function enterNode(NodeInterface $node)
+    public function enterNode(NodeInterface $node): ?NodeInterface
     {
         return null;
     }
@@ -37,7 +35,7 @@ abstract class AbstractNodeVisitor implements NodeVisitorInterface
     /**
      * {@inheritdoc}
      */
-    public function leaveNode(NodeInterface $node)
+    public function leaveNode(NodeInterface $node): ?NodeInterface
     {
         return null;
     }

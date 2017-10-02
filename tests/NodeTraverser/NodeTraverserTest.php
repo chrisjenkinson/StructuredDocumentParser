@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\NodeTraverser;
 
 use chrisjenkinson\StructuredDocumentParser\Node\AbstractNode;
@@ -11,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class NodeTraverserTest extends TestCase
 {
-    public function testItReplacesANode()
+    public function testItReplacesANode(): void
     {
         $traverser = new NodeTraverser();
 
@@ -36,7 +38,7 @@ class NodeTraverserTest extends TestCase
 
 class TestNodeVisitor extends AbstractNodeVisitor
 {
-    public function enterNode(NodeInterface $node)
+    public function enterNode(NodeInterface $node): ?NodeInterface
     {
         if (!$node instanceof ChildNode) {
             return null;

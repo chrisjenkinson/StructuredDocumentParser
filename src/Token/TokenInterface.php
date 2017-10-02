@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
-/**
- * Interface TokenInterface
- * @package chrisjenkinson\StructuredDocumentParser\Token
- */
 interface TokenInterface
 {
+    public function __toString(): string;
+
     /**
      * @return mixed[]
      */
@@ -18,27 +18,11 @@ interface TokenInterface
      *
      * @return mixed
      */
-    public function getValue($key);
+    public function getValue(string $key);
 
-    /**
-     * @return string
-     */
-    public function getType();
+    public function getType(): string;
 
-    /**
-     * @return TokenPosition
-     */
-    public function getPosition();
+    public function getPosition(): TokenPosition;
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasKey($key);
-
-    /**
-     * @return string
-     */
-    public function __toString();
+    public function hasKey(string $key): bool;
 }

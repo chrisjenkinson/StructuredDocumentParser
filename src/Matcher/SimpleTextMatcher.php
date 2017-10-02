@@ -1,13 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 
 use chrisjenkinson\StructuredDocumentParser\Finder\RegexFinder;
 
-/**
- * Class SimpleTextMatcher
- * @package chrisjenkinson\StructuredDocumentParser\Matcher
- */
 class SimpleTextMatcher extends AbstractMatcher
 {
     /**
@@ -15,9 +13,6 @@ class SimpleTextMatcher extends AbstractMatcher
      */
     private $finder;
 
-    /**
-     * SimpleTextMatcher constructor.
-     */
     public function __construct()
     {
         $pattern = '/(?<all>.+)/Ax';
@@ -25,12 +20,7 @@ class SimpleTextMatcher extends AbstractMatcher
         $this->finder = new RegexFinder($pattern);
     }
 
-    /**
-     * @param string $text
-     *
-     * @return MatchedText|null
-     */
-    public function match($text)
+    public function match(string $text): ?MatchedText
     {
         if ($this->finder->find($text)) {
             return new MatchedText($this->finder->getMatches(['all']));
