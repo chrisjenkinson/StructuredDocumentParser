@@ -10,7 +10,3 @@ install:
 script:
   - bin/phpspec run
   - bin/phpunit tests/
-
-after_success:
-  - bash -c 'wget https://scrutinizer-ci.com/ocular.phar;'
-  - bash -c 'php ocular.phar code-coverage:upload --format=php-clover coverage.xml;'
