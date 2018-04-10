@@ -35,7 +35,7 @@ abstract class AbstractNodeVisitor implements NodeVisitorInterface
     /**
      * {@inheritdoc}
      */
-    public function leaveNode(NodeInterface $node): ?NodeInterface
+    public function leaveNode(NodeInterface $node)
     {
         return null;
     }
