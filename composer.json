@@ -8,9 +8,9 @@
   },
   "require-dev": {
     "ext-mbstring": "*",
-    "phpspec/phpspec": "*",
-    "phpunit/phpunit": "*",
-    "leanphp/phpspec-code-coverage": "*"
+    "phpspec/phpspec": "7.0.0",
+    "phpunit/phpunit": "7.5.0",
+    "friends-of-phpspec/phpspec-code-coverage": "4.0.0"
   },
   "license": "MIT",
   "authors": [
