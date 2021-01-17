@@ -46,33 +46,6 @@ class NodeTraverserSpec extends ObjectBehavior
         $nodeVisitor->afterTraverse($node)->shouldHaveBeenCalled();
     }
 
-    public function it_can_replace_a_node(NodeInterface $root, NodeInterface $node, NodeInterface $replacement, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2): void
-    {
-        $root->getNodes()->willReturn([$node]);
-        $root->getAttributes()->willReturn([]);
-        $root->removeNode($node)->shouldBeCalled();
-
-        $node->getNodes()->willReturn([]);
-        $node->getAttributes()->willReturn([]);
-
-        $replacement->getNodes()->willReturn([]);
-        $replacement->getAttributes()->willReturn([]);
-
-        $nodeVisitor->beforeTraverse($root)->willReturn(null);
-        $nodeVisitor->enterNode($root)->willReturn(null);
-        $nodeVisitor->enterNode($node)->willReturn($replacement);
-        $nodeVisitor->leaveNode($replacement)->willReturn(null);
-        $nodeVisitor->leaveNode($root)->willReturn(null);
-        $nodeVisitor->afterTraverse($root)->willReturn(null);
-
-        $root->addNode($replacement)->shouldBeCalled();
-
-        $this->addVisitor($nodeVisitor);
-        $this->addVisitor($nodeVisitor2);
-
-        $this->traverse($root)->shouldReturn($root);
-    }
-
     public function it_can_remove_a_child(NodeInterface $node, NodeInterface $child, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2): void
     {
         $node->getNodes()->willReturn([]);
