@@ -25,13 +25,10 @@
       "chrisjenkinson\\StructuredDocumentParser\\": "src"
     }
   },
-  "config": {
-    "bin-dir": "bin"
-  },
   "scripts": {
     "test": [
-      "bin/phpspec run",
-      "bin/phpunit tests/"
+      "vendor/bin/phpspec run",
+      "vendor/bin/phpunit tests/"
       ]
   }
 }
