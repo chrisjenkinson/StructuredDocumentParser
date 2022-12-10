@@ -12,7 +12,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2']
+        php: ['7.4', '8.0', '8.1']
         experimental: [false]
         include:
           - php: 8.2
@@ -24,7 +24,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-versions }}
+        php-version: ${{ matrix.php }}
 
     - name: Validate composer.json and composer.lock
       run: composer validate
