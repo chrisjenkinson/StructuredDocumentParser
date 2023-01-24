@@ -10,7 +10,7 @@
     "ext-mbstring": "*",
     "phpspec/phpspec": "7.3.0",
     "phpunit/phpunit": "9.5.28",
-    "friends-of-phpspec/phpspec-code-coverage": "6.1.0"
+    "friends-of-phpspec/phpspec-code-coverage": "6.2.0"
   },
   "license": "MIT",
   "authors": [
