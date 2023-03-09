@@ -9,7 +9,7 @@
   "require-dev": {
     "ext-mbstring": "*",
     "phpspec/phpspec": "7.3.0",
-    "phpunit/phpunit": "9.6.4",
+    "phpunit/phpunit": "9.6.5",
     "friends-of-phpspec/phpspec-code-coverage": "6.3.0"
   },
   "license": "MIT",
