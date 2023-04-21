@@ -8,7 +8,7 @@
   },
   "require-dev": {
     "ext-mbstring": "*",
-    "phpspec/phpspec": "7.3.0",
+    "phpspec/phpspec": "7.4.0",
     "phpunit/phpunit": "9.6.7",
     "friends-of-phpspec/phpspec-code-coverage": "6.3.0"
   },
