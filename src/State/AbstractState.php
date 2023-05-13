@@ -15,8 +15,8 @@ use ReflectionClass;
 abstract class AbstractState implements StateInterface
 {
     /**
-     * @var MatcherInterface[]
-     */
+        @var array<array{'matcher': MatcherInterface, 'callback': ?callable}>
+    **/
     private $matchers = [];
 
     public function registerMatcher(MatcherInterface $matcher, callable $callback = null): void
