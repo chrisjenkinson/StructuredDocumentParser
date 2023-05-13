@@ -10,7 +10,10 @@
     "ext-mbstring": "*",
     "phpspec/phpspec": "7.4.0",
     "phpunit/phpunit": "9.6.8",
-    "friends-of-phpspec/phpspec-code-coverage": "6.3.0"
+    "friends-of-phpspec/phpspec-code-coverage": "6.3.0",
+    "phpstan/phpstan": "1.10.15",
+    "phpstan/extension-installer": "1.3.0",
+    "jangregor/phpstan-prophecy": "1.0.0"
   },
   "license": "MIT",
   "authors": [
@@ -28,7 +31,13 @@
   "scripts": {
     "test": [
       "vendor/bin/phpspec run",
-      "vendor/bin/phpunit tests/"
+      "vendor/bin/phpunit tests/",
+      "vendor/bin/phpstan analyse"
       ]
+  },
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": true
+    }
   }
 }
