@@ -21,12 +21,7 @@ class NodeTraverser
         $this->visitors[] = $visitor;
     }
 
-    /**
-     * @param NodeInterface $node
-     *
-     * @return bool|NodeInterface|null
-     */
-    public function traverse(NodeInterface $node)
+    public function traverse(NodeInterface $node): bool|NodeInterface|null
     {
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $before = $nodeVisitor->beforeTraverse($node)) {
@@ -47,12 +42,7 @@ class NodeTraverser
         return $node;
     }
 
-    /**
-     * @param NodeInterface $node
-     *
-     * @return bool|NodeInterface|null
-     */
-    public function traverseNode(NodeInterface $node)
+    public function traverseNode(NodeInterface $node): bool|NodeInterface
     {
         $node = $this->runEnterNodeVisitors($node);
 
@@ -111,10 +101,6 @@ class NodeTraverser
         array_map(function (NodeInterface $child) use (&$node): void {
             $newChild = $this->traverseNode($child);
 
-            if (null === $child) {
-                return;
-            }
-
             if (get_class($newChild) !== get_class($child)) {
                 $node->removeNode($child);
             }
@@ -137,12 +123,7 @@ class NodeTraverser
         });
     }
 
-    /**
-     * @param NodeInterface $node
-     *
-     * @return NodeInterface|bool
-     */
-    private function runLeaveNodeVisitors(NodeInterface $node)
+    private function runLeaveNodeVisitors(NodeInterface $node): NodeInterface|bool
     {
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (self::REMOVE_NODE === $node) {
