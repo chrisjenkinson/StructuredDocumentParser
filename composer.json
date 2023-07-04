@@ -11,7 +11,7 @@
     "phpspec/phpspec": "7.4.0",
     "phpunit/phpunit": "9.6.9",
     "friends-of-phpspec/phpspec-code-coverage": "6.3.0",
-    "phpstan/phpstan": "1.10.22",
+    "phpstan/phpstan": "1.10.23",
     "phpstan/extension-installer": "1.3.1",
     "jangregor/phpstan-prophecy": "1.0.0"
   },
