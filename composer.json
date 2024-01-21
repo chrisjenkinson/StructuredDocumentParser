@@ -3,7 +3,7 @@
   "description": "A structured document parser.",
   "type": "library",
   "require": {
-    "php": "8.0.* || 8.1.* || 8.2.* || 8.3.*",
+    "php": "8.1.* || 8.2.* || 8.3.*",
     "ext-libxml": "*"
   },
   "require-dev": {
