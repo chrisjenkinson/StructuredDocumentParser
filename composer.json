@@ -9,7 +9,7 @@
   "require-dev": {
     "ext-mbstring": "*",
     "phpspec/phpspec": "7.5.*",
-    "phpunit/phpunit": "9.6.*",
+    "phpunit/phpunit": "9.6.* || 10.5.*",
     "friends-of-phpspec/phpspec-code-coverage": "6.3.*",
     "phpstan/phpstan": "1.10.*",
     "phpstan/extension-installer": "1.3.*",
