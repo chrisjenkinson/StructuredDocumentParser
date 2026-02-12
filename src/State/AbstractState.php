@@ -19,7 +19,7 @@ abstract class AbstractState implements StateInterface
     **/
     private $matchers = [];
 
-    public function registerMatcher(MatcherInterface $matcher, callable $callback = null): void
+    public function registerMatcher(MatcherInterface $matcher, ?callable $callback = null): void
     {
         $this->matchers[] = ['matcher' => $matcher, 'callback' => $callback];
     }
