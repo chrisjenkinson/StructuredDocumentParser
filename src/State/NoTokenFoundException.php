@@ -24,7 +24,7 @@ class NoTokenFoundException extends RuntimeException
      */
     private $remainingText;
 
-    public function __construct(string $stateName, int $currentPosition, string $remainingText, int $code = 0, Throwable $previous = null)
+    public function __construct(string $stateName, int $currentPosition, string $remainingText, int $code = 0, ?Throwable $previous = null)
     {
         $this->stateName       = $stateName;
         $this->currentPosition = $currentPosition;

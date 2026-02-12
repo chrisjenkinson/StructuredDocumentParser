@@ -36,7 +36,7 @@ class AmbiguousTokenFoundException extends RuntimeException
         array $calledMatchers,
         array $matchedTokens,
         int $code = 0,
-        Throwable $previous = null
+        ?Throwable $previous = null
     ) {
         $this->stateName      = $stateName;
         $this->text           = $text;
