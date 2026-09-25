@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
+use InvalidArgumentException;
+
 class Token implements TokenInterface
 {
+    private readonly string $text;
+
     /**
      * @param mixed[] $value
      */
@@ -14,11 +18,21 @@ class Token implements TokenInterface
         private readonly array $value,
         private readonly TokenPosition $position
     ) {
+        if (!isset($value['all']) || !is_string($value['all'])) {
+            throw new InvalidArgumentException(sprintf('Token %s needs a string "all" value', $type));
+        }
+
+        $this->text = $value['all'];
     }
 
     public function __toString(): string
     {
-        return sprintf('%s (%s)', $this->getType(), trim($this->getValue('all')));
+        return sprintf('%s (%s)', $this->getType(), trim($this->getText()));
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
     }
 
     /**

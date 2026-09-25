@@ -93,7 +93,7 @@ class Lexer
 
             $tokens->add($token);
 
-            $length = mb_strlen($token->getValue('all'));
+            $length = mb_strlen($token->getText());
 
             if (0 < $length) {
                 $cursor->advance($length);

@@ -29,6 +29,8 @@ class NodeTraverserTest extends TestCase
 
         $node = $traverser->traverse($node);
 
+        Assert::assertNotNull($node);
+
         Assert::assertFalse($node->hasNode('ChildNode'));
         Assert::assertInstanceOf(NodeFromVisitor::class, $node->getNode('NodeFromVisitor'));
     }
@@ -52,6 +54,8 @@ class NodeTraverserTest extends TestCase
 
         $node = $traverser->traverse($node);
 
+        Assert::assertNotNull($node);
+
         Assert::assertEquals('replacement', $node->getNode('ChildNode')->getNode('GrandchildNode')->getAttribute('testAttribute'));
     }
 
@@ -66,6 +70,8 @@ class NodeTraverserTest extends TestCase
 
         $node = $traverser->traverse($node);
 
+        Assert::assertNotNull($node);
+
         Assert::assertFalse($node->hasNode('ChildNode'));
     }
 
@@ -79,6 +85,8 @@ class NodeTraverserTest extends TestCase
         $traverser->addVisitor(new RemoveChildNodeWithActionVisitor());
 
         $node = $traverser->traverse($node);
+
+        Assert::assertNotNull($node);
 
         Assert::assertFalse($node->hasNode('ChildNode'));
     }
@@ -109,6 +117,8 @@ class NodeTraverserTest extends TestCase
 
         $node = $traverser->traverse($node);
 
+        Assert::assertNotNull($node);
+
         Assert::assertSame([5 => 'five', 9 => 'nine'], $node->getAttribute('values'));
     }
 
@@ -123,6 +133,8 @@ class NodeTraverserTest extends TestCase
         $traverser->addVisitor(new RemoveChildNodeVisitor());
 
         $node = $traverser->traverse($node);
+
+        Assert::assertNotNull($node);
 
         Assert::assertSame(['second' => $keep], $node->getAttribute('children'));
     }
@@ -139,6 +151,8 @@ class NodeTraverserTest extends TestCase
 
         $node = $traverser->traverse($node);
 
+        Assert::assertNotNull($node);
+
         Assert::assertSame([$keep], $node->getAttribute('children'));
     }
 
@@ -153,6 +167,8 @@ class NodeTraverserTest extends TestCase
         $traverser->addVisitor(new RemoveChildNodeVisitor());
 
         $node = $traverser->traverse($node);
+
+        Assert::assertNotNull($node);
 
         Assert::assertSame(['group' => [$keep]], $node->getAttribute('children'));
     }

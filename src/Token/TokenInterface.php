@@ -17,6 +17,11 @@ interface TokenInterface
 
     public function getType(): string;
 
+    /**
+     * The text the token consumed from the input.
+     */
+    public function getText(): string;
+
     public function getPosition(): TokenPosition;
 
     public function hasKey(string $key): bool;

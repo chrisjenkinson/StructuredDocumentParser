@@ -12,7 +12,9 @@ namespace chrisjenkinson\StructuredDocumentParser\Visitor;
  *
  *     public function accept(VisitorInterface $visitor): mixed
  *     {
- *         assert($visitor instanceof MarkdownVisitor);
+ *         if (!$visitor instanceof MarkdownVisitor) {
+ *             throw new InvalidArgumentException('Heading can only be visited by a MarkdownVisitor');
+ *         }
  *
  *         return $visitor->visitHeading($this);
  *     }

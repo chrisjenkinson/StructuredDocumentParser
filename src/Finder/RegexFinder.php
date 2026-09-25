@@ -7,7 +7,7 @@ namespace chrisjenkinson\StructuredDocumentParser\Finder;
 class RegexFinder
 {
     /**
-     * @var mixed[]
+     * @var array<int|string, string>
      */
     private array $matches = [];
 
@@ -32,6 +32,11 @@ class RegexFinder
         return false;
     }
 
+    /**
+     * @param string[] $keys
+     *
+     * @return array<int|string, string>
+     */
     public function getMatches(array $keys): array
     {
         return array_intersect_key($this->matches, array_flip($keys));
