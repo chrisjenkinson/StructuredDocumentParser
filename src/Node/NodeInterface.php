@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
-interface NodeInterface
+use JsonSerializable;
+
+interface NodeInterface extends JsonSerializable
 {
     public function __toString(): string;
 

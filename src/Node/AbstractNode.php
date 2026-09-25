@@ -21,7 +21,15 @@ abstract class AbstractNode implements NodeInterface
 
     public function __toString(): string
     {
-        return json_encode(['attributes' => $this->attributes, 'nodes' => $this->nodes], JSON_PRETTY_PRINT);
+        return json_encode($this, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @return array{attributes: array, nodes: NodeInterface[]}
+     */
+    public function jsonSerialize(): array
+    {
+        return ['attributes' => $this->attributes, 'nodes' => $this->nodes];
     }
 
     /**

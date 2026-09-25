@@ -7,6 +7,7 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\Node;
 use chrisjenkinson\StructuredDocumentParser\Node\DuplicateNodeException;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeNotFoundException;
+use chrisjenkinson\StructuredDocumentParser\Node\SimpleNode;
 use PhpSpec\ObjectBehavior;
 use RuntimeException;
 
@@ -74,21 +75,58 @@ class SimpleNodeSpec extends ObjectBehavior
         $this->shouldThrow(NodeNotFoundException::class)->duringReplaceNode($node);
     }
 
-    public function it_exports_a_tree_as_a_string(NodeInterface $node): void
+    public function it_exports_a_tree_as_a_string(): void
     {
-        $node->getName()->willReturn('ChildNode');
-        $node->__toString()->willReturn('');
+        $child      = new SimpleNode();
+        $grandchild = new SimpleNode();
+        $listItem   = new SimpleNode();
+
+        $grandchild->setAttribute('depth', 2);
+        $listItem->setAttribute('item', 'first');
+        $child->addNode($grandchild);
+        $child->setAttribute('items', [$listItem]);
 
         $this->setAttribute('something', 'result');
-        $this->addNode($node);
+        $this->addNode($child);
 
         $this->__toString()->shouldReturn('{
     "attributes": {
         "something": "result"
     },
     "nodes": {
-        "ChildNode": {}
+        "SimpleNode": {
+            "attributes": {
+                "items": [
+                    {
+                        "attributes": {
+                            "item": "first"
+                        },
+                        "nodes": []
+                    }
+                ]
+            },
+            "nodes": {
+                "SimpleNode": {
+                    "attributes": {
+                        "depth": 2
+                    },
+                    "nodes": []
+                }
+            }
+        }
     }
+}');
+    }
+
+    public function it_replaces_invalid_utf8_when_exporting_as_a_string(): void
+    {
+        $this->setAttribute('bad', "a\xffb");
+
+        $this->__toString()->shouldReturn('{
+    "attributes": {
+        "bad": "a\ufffdb"
+    },
+    "nodes": []
 }');
     }
 }
