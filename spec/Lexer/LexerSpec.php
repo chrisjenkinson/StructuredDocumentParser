@@ -12,6 +12,7 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\AbstractMatcher;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use chrisjenkinson\StructuredDocumentParser\Matcher\SimpleTextMatcher;
 use chrisjenkinson\StructuredDocumentParser\State\InitialState;
+use chrisjenkinson\StructuredDocumentParser\State\NoTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 use PhpSpec\ObjectBehavior;
@@ -100,6 +101,39 @@ class LexerSpec extends ObjectBehavior
     public function it_throws_when_popping_without_a_previous_state(): void
     {
         $this->shouldThrow(NoPreviousStateException::class)->during('popState');
+    }
+
+    public function it_gives_the_same_tokens_when_tokenising_the_same_text_twice(): void
+    {
+        $origState = new InitialState();
+        $newState  = new InitialState();
+
+        $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'), function (Lexer $lexer) use ($newState): void {
+            $lexer->setState($newState);
+        });
+        $newState->registerMatcher(new LexerSpecRegexMatcher('Other', '/(?<all>a)/A'));
+
+        $this->beConstructedWith($origState);
+
+        $this->tokenise('a')->__toString()->shouldReturn('Letter (a)');
+        $this->tokenise('a')->__toString()->shouldReturn('Letter (a)');
+    }
+
+    public function it_restores_the_initial_state_after_tokenising(): void
+    {
+        $origState = new InitialState();
+        $newState  = new InitialState();
+
+        $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'), function (Lexer $lexer) use ($newState): void {
+            $lexer->setState($newState);
+        });
+
+        $this->beConstructedWith($origState);
+
+        $this->shouldThrow(NoTokenFoundException::class)->during('tokenise', ['ab']);
+
+        $this->getState()->shouldReturn($origState);
+        $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
     }
 
     public function it_switches_state_on_a_zero_length_lookahead_match(): void
