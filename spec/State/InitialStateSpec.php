@@ -9,6 +9,7 @@ use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\State\AmbiguousTokenFoundException;
+use chrisjenkinson\StructuredDocumentParser\State\InvalidMatchedTextException;
 use chrisjenkinson\StructuredDocumentParser\State\NoTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 use PhpSpec\ObjectBehavior;
@@ -94,6 +95,36 @@ class InitialStateSpec extends ObjectBehavior
         $matchedText->getAll()->willReturn(['all' => 'remainingText']);
 
         $this->findMatchingToken($lexer, $cursor)->getType()->shouldReturn('Heading');
+    }
+
+    public function it_throws_if_the_matched_text_has_no_all_key(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText): void
+    {
+        $cursor->getRemainingText()->willReturn('remainingText');
+        $cursor->getCurrentPosition()->willReturn(0);
+
+        $this->registerMatcher($matcher);
+
+        $matcher->match('remainingText')->willReturn($matchedText);
+        $matcher->getName()->willReturn('HeadingMatcher');
+
+        $matchedText->getAll()->willReturn(['heading' => 'remainingText']);
+
+        $this->shouldThrow(new InvalidMatchedTextException('HeadingMatcher', 'it has no "all" key'))->duringFindMatchingToken($lexer, $cursor);
+    }
+
+    public function it_throws_if_the_all_key_is_not_a_string(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText): void
+    {
+        $cursor->getRemainingText()->willReturn('remainingText');
+        $cursor->getCurrentPosition()->willReturn(0);
+
+        $this->registerMatcher($matcher);
+
+        $matcher->match('remainingText')->willReturn($matchedText);
+        $matcher->getName()->willReturn('HeadingMatcher');
+
+        $matchedText->getAll()->willReturn(['all' => 13]);
+
+        $this->shouldThrow(new InvalidMatchedTextException('HeadingMatcher', 'its "all" value is not a string'))->duringFindMatchingToken($lexer, $cursor);
     }
 
     public function it_calls_a_callback(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText): void

@@ -37,6 +37,8 @@ abstract class AbstractState implements StateInterface
         $matchedText = $matchedText[0];
         $callback    = $callbacks[0];
 
+        $this->guardAgainstInvalidMatchedText($matcher, $matchedText);
+
         if (is_callable($callback)) {
             $callback($lexer);
         }
@@ -51,6 +53,19 @@ abstract class AbstractState implements StateInterface
         }
 
         return $matcherName;
+    }
+
+    private function guardAgainstInvalidMatchedText(string $matcherName, MatchedText $matchedText): void
+    {
+        $matches = $matchedText->getAll();
+
+        if (!array_key_exists('all', $matches)) {
+            throw new InvalidMatchedTextException($matcherName, 'it has no "all" key');
+        }
+
+        if (!is_string($matches['all'])) {
+            throw new InvalidMatchedTextException($matcherName, 'its "all" value is not a string');
+        }
     }
 
     public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition): void
