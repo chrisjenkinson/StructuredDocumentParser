@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\Finder;
 
+use chrisjenkinson\StructuredDocumentParser\Finder\RegexFailedException;
 use PhpSpec\ObjectBehavior;
 
 class RegexFinderSpec extends ObjectBehavior
@@ -20,6 +21,13 @@ class RegexFinderSpec extends ObjectBehavior
         $this->beConstructedWith('/abc/');
 
         $this->find('def')->shouldReturn(false);
+    }
+
+    public function it_throws_if_the_regex_fails(): void
+    {
+        $this->beConstructedWith('/abc/u');
+
+        $this->shouldThrow(new RegexFailedException('/abc/u', 'Malformed UTF-8 characters, possibly incorrectly encoded'))->during('find', ["\xff"]);
     }
 
     public function it_stores_matches(): void

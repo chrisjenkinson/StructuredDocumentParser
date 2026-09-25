@@ -47,4 +47,18 @@ class CursorSpec extends ObjectBehavior
 
         $this->getRemainingText()->shouldReturn('');
     }
+
+    public function it_returns_the_remaining_text_after_advancing_over_multibyte_characters(): void
+    {
+        $this->beConstructedWith("é€\nxé");
+
+        $this->advance(3);
+
+        $this->getRemainingText()->shouldReturn('xé');
+        $this->getCurrentPosition()->shouldReturn(3);
+
+        $this->advance(2);
+
+        $this->isEndOfText()->shouldReturn(true);
+    }
 }

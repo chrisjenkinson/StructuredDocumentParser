@@ -14,9 +14,14 @@ class TokenStream implements Countable
      */
     private $tokens = [];
 
+    /**
+     * @var int
+     */
+    private $current = 0;
+
     public function __toString(): string
     {
-        return implode("\n", $this->tokens);
+        return implode("\n", array_slice($this->tokens, $this->current));
     }
 
     public function add(TokenInterface $token): void
@@ -26,16 +31,12 @@ class TokenStream implements Countable
 
     public function count(): int
     {
-        return count($this->tokens);
+        return count($this->tokens) - $this->current;
     }
 
     public function lookAhead(int $distance = 1): ?TokenInterface
     {
-        if (!array_key_exists($distance, $this->tokens)) {
-            return null;
-        }
-
-        return $this->tokens[$distance];
+        return $this->tokens[$this->current + $distance] ?? null;
     }
 
     public function consumeToken(): TokenInterface
@@ -44,16 +45,12 @@ class TokenStream implements Countable
             throw new RuntimeException('End of token stream');
         }
 
-        return array_shift($this->tokens);
+        return $this->tokens[$this->current++];
     }
 
     public function getCurrentToken(): ?TokenInterface
     {
-        if (0 === count($this->tokens)) {
-            return null;
-        }
-
-        return $this->tokens[0];
+        return $this->tokens[$this->current] ?? null;
     }
 
     /**
@@ -63,7 +60,7 @@ class TokenStream implements Countable
      */
     public function expectTokenType(string $expectedType): bool
     {
-        if (0 === count($this->tokens)) {
+        if (0 === count($this)) {
             throw new RuntimeException(sprintf('No more tokens; expected %s', $expectedType));
         }
 
@@ -85,7 +82,7 @@ class TokenStream implements Countable
      */
     public function expectTokenTypes(array $expectedTypes): bool
     {
-        if (0 === count($this->tokens)) {
+        if (0 === count($this)) {
             throw new RuntimeException(sprintf('No more tokens; expected any of %s', implode(', ', $expectedTypes)));
         }
 

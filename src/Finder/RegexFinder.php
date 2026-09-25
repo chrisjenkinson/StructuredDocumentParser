@@ -23,7 +23,13 @@ class RegexFinder
 
     public function find(string $text): bool
     {
-        if (preg_match($this->pattern, $text, $matches)) {
+        $result = preg_match($this->pattern, $text, $matches);
+
+        if (false === $result) {
+            throw new RegexFailedException($this->pattern, preg_last_error_msg());
+        }
+
+        if (1 === $result) {
             $this->matches = $matches;
 
             return true;

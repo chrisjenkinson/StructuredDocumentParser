@@ -21,6 +21,20 @@ class SimpleTextMatcherSpec extends ObjectBehavior
         $this->match('1234')->shouldBeLike($matchedText);
     }
 
+    public function it_matches_text_across_newlines(): void
+    {
+        $matchedText = new MatchedText(['all' => "12\n34\n"]);
+
+        $this->match("12\n34\n")->shouldBeLike($matchedText);
+    }
+
+    public function it_matches_text_starting_with_a_newline(): void
+    {
+        $matchedText = new MatchedText(['all' => "\n1234"]);
+
+        $this->match("\n1234")->shouldBeLike($matchedText);
+    }
+
     public function it_does_not_match_an_empty_string(): void
     {
         $this->match('')->shouldReturn(null);

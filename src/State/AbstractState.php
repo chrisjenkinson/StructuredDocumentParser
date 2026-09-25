@@ -53,6 +53,23 @@ abstract class AbstractState implements StateInterface
         return $matcherName;
     }
 
+    private function guardAgainstInvalidMatchedText(string $matcherName, MatchedText $matchedText, string $text): void
+    {
+        $matches = $matchedText->getAll();
+
+        if (!array_key_exists('all', $matches)) {
+            throw new InvalidMatchedTextException($matcherName, 'it has no "all" key');
+        }
+
+        if (!is_string($matches['all'])) {
+            throw new InvalidMatchedTextException($matcherName, 'its "all" value is not a string');
+        }
+
+        if (!str_starts_with($text, $matches['all'])) {
+            throw new InvalidMatchedTextException($matcherName, 'its "all" value is not at the start of the text');
+        }
+    }
+
     public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition): void
     {
         if (1 < count($matchedText)) {
@@ -75,6 +92,8 @@ abstract class AbstractState implements StateInterface
             $callback = $matcherAndCallback['callback'];
 
             if ($matches = $matcher->match($text)) {
+                $this->guardAgainstInvalidMatchedText($matcher->getName(), $matches, $text);
+
                 $matchedTokens[]  = $matches;
                 $calledMatchers[] = $matcher->getName();
                 $callbacks[]      = $callback;

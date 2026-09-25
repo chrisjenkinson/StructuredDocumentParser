@@ -121,4 +121,22 @@ class TokenStreamSpec extends ObjectBehavior
 
         $this->__toString()->shouldReturn("SomethingToken (1)\nSomethingToken (2)");
     }
+
+    public function it_only_includes_unconsumed_tokens_after_consuming(TokenInterface $token1, TokenInterface $token2, TokenInterface $token3): void
+    {
+        $token2->__toString()->willReturn('token2');
+        $token3->__toString()->willReturn('token3');
+
+        $this->add($token1);
+        $this->add($token2);
+        $this->add($token3);
+
+        $this->consumeToken()->shouldReturn($token1);
+
+        $this->shouldHaveCount(2);
+        $this->getCurrentToken()->shouldReturn($token2);
+        $this->lookAhead()->shouldReturn($token3);
+        $this->lookAhead(2)->shouldReturn(null);
+        $this->__toString()->shouldReturn("token2\ntoken3");
+    }
 }

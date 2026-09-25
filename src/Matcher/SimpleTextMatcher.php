@@ -15,7 +15,7 @@ class SimpleTextMatcher extends AbstractMatcher
 
     public function __construct()
     {
-        $pattern = '/(?<all>.+)/Ax';
+        $pattern = '/(?<all>.+)/As';
 
         $this->finder = new RegexFinder($pattern);
     }
