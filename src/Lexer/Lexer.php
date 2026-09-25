@@ -60,6 +60,12 @@ class Lexer
         return $this->state;
     }
 
+    /**
+     * Switches to the given state, recording the current one so popState() can return to it.
+     *
+     * States are compared by identity when detecting zero-length token loops, so reuse
+     * state instances rather than creating new ones on each switch.
+     */
     public function setState(StateInterface $state): void
     {
         $this->previousStates[] = $this->state;
@@ -73,5 +79,12 @@ class Lexer
         }
 
         return end($this->previousStates);
+    }
+
+    public function popState(): void
+    {
+        $this->state = $this->getLastState();
+
+        array_pop($this->previousStates);
     }
 }

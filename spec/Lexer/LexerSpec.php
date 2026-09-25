@@ -75,6 +75,33 @@ class LexerSpec extends ObjectBehavior
         $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
     }
 
+    public function it_pops_back_to_the_previous_state(): void
+    {
+        $firstState  = new InitialState();
+        $secondState = new InitialState();
+        $thirdState  = new InitialState();
+
+        $this->beConstructedWith($firstState);
+
+        $this->setState($secondState);
+        $this->setState($thirdState);
+
+        $this->popState();
+
+        $this->getState()->shouldReturn($secondState);
+        $this->getLastState()->shouldReturn($firstState);
+
+        $this->popState();
+
+        $this->getState()->shouldReturn($firstState);
+        $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
+    }
+
+    public function it_throws_when_popping_without_a_previous_state(): void
+    {
+        $this->shouldThrow(NoPreviousStateException::class)->during('popState');
+    }
+
     public function it_switches_state_on_a_zero_length_lookahead_match(): void
     {
         $origState = new InitialState();
