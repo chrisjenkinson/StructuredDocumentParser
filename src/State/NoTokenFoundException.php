@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace chrisjenkinson\StructuredDocumentParser\State;
 
+use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use RuntimeException;
 use Throwable;
 
@@ -24,17 +25,24 @@ class NoTokenFoundException extends RuntimeException
      */
     private $remainingText;
 
-    public function __construct(string $stateName, int $currentPosition, string $remainingText, int $code = 0, ?Throwable $previous = null)
+    /**
+     * @var TokenPosition
+     */
+    private $position;
+
+    public function __construct(string $stateName, int $currentPosition, string $remainingText, TokenPosition $position, int $code = 0, ?Throwable $previous = null)
     {
         $this->stateName       = $stateName;
         $this->currentPosition = $currentPosition;
         $this->remainingText   = $remainingText;
+        $this->position        = $position;
 
         $message = sprintf(
-            'No token found with state %s, current position: %d, remaining text: %s',
+            'No token found with state %s at line %d, column %d: %s',
             $stateName,
-            $currentPosition,
-            $remainingText
+            $position->getLine(),
+            $position->getColumn(),
+            TextExcerpt::of($remainingText)
         );
 
         parent::__construct($message, $code, $previous);
@@ -53,5 +61,10 @@ class NoTokenFoundException extends RuntimeException
     public function getRemainingText(): string
     {
         return $this->remainingText;
+    }
+
+    public function getPosition(): TokenPosition
+    {
+        return $this->position;
     }
 }

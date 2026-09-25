@@ -27,11 +27,12 @@ abstract class AbstractState implements StateInterface
 
     public function findMatchingToken(Lexer $lexer, Cursor $cursor): TokenInterface
     {
-        $text = $cursor->getRemainingText();
+        $text     = $cursor->getRemainingText();
+        $position = new TokenPosition($cursor->getLine(), $cursor->getColumn());
 
         list($matchedText, $calledMatchers, $callbacks) = $this->runMatchers($text);
 
-        $this->guardAgainstWrongNumberOfMatches($matchedText, $text, $calledMatchers, $cursor->getCurrentPosition());
+        $this->guardAgainstWrongNumberOfMatches($matchedText, $text, $calledMatchers, $cursor->getCurrentPosition(), $position);
 
         $matcher = $calledMatchers[0];
         /** @var MatchedText $matchedText */
@@ -45,7 +46,7 @@ abstract class AbstractState implements StateInterface
         return new Token(
             $this->getTokenType($matcher),
             $matchedText->getAll(),
-            new TokenPosition($cursor->getLine(), $cursor->getColumn())
+            $position
         );
     }
 
@@ -75,14 +76,14 @@ abstract class AbstractState implements StateInterface
         }
     }
 
-    public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition): void
+    public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition, TokenPosition $position): void
     {
         if (1 < count($matchedText)) {
-            throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText);
+            throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText, $position);
         }
 
         if (1 > count($matchedText)) {
-            throw new NoTokenFoundException($this->getName(), $currentPosition, $remainingText);
+            throw new NoTokenFoundException($this->getName(), $currentPosition, $remainingText, $position);
         }
     }
 
