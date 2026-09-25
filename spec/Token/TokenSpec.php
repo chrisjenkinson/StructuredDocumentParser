@@ -6,6 +6,7 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\Token;
 
 use chrisjenkinson\StructuredDocumentParser\Token\NonexistentKeyException;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
+use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 
 class TokenSpec extends ObjectBehavior
@@ -48,5 +49,24 @@ class TokenSpec extends ObjectBehavior
     public function it_casts_to_a_string(): void
     {
         $this->__toString()->shouldReturn('Something (value)');
+    }
+
+    public function it_has_the_matched_text(): void
+    {
+        $this->getText()->shouldReturn('value');
+    }
+
+    public function it_requires_the_matched_text_to_be_a_string(): void
+    {
+        $this->beConstructedWith('Something', ['all' => 13], new TokenPosition(3, 7));
+
+        $this->shouldThrow(InvalidArgumentException::class)->duringInstantiation();
+    }
+
+    public function it_requires_the_matched_text(): void
+    {
+        $this->beConstructedWith('Something', ['heading' => 'value'], new TokenPosition(3, 7));
+
+        $this->shouldThrow(InvalidArgumentException::class)->duringInstantiation();
     }
 }
