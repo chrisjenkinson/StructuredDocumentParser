@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\Lexer;
 
+use chrisjenkinson\StructuredDocumentParser\Finder\RegexFinder;
+use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
+use chrisjenkinson\StructuredDocumentParser\Lexer\ZeroLengthTokenLoopException;
+use chrisjenkinson\StructuredDocumentParser\Matcher\AbstractMatcher;
+use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use chrisjenkinson\StructuredDocumentParser\Matcher\SimpleTextMatcher;
 use chrisjenkinson\StructuredDocumentParser\State\InitialState;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
@@ -62,5 +67,72 @@ class LexerSpec extends ObjectBehavior
         $this->setState($newState);
 
         $this->getLastState()->shouldReturn($origState);
+    }
+
+    public function it_switches_state_on_a_zero_length_lookahead_match(): void
+    {
+        $origState = new InitialState();
+        $newState  = new InitialState();
+
+        $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'));
+        $origState->registerMatcher(new LexerSpecRegexMatcher('Lookahead', '/(?<all>)(?=b)/A'), function (Lexer $lexer) use ($newState): void {
+            $lexer->setState($newState);
+        });
+        $newState->registerMatcher(new LexerSpecRegexMatcher('Rest', '/(?<all>b+)/A'));
+
+        $this->beConstructedWith($origState);
+
+        $this->tokenise('abb')->__toString()->shouldReturn("Letter (a)\nLookahead ()\nRest (bb)");
+    }
+
+    public function it_throws_if_a_zero_length_match_does_not_switch_state(): void
+    {
+        $state = new InitialState();
+        $state->registerMatcher(new LexerSpecRegexMatcher('Empty', '/(?<all>)/A'));
+
+        $this->beConstructedWith($state);
+
+        $this->shouldThrow(new ZeroLengthTokenLoopException('InitialState', 0))->during('tokenise', ['a']);
+    }
+
+    public function it_throws_if_zero_length_matches_return_to_a_state_without_advancing(): void
+    {
+        $firstState  = new InitialState();
+        $secondState = new InitialState();
+
+        $firstState->registerMatcher(new LexerSpecRegexMatcher('ToSecond', '/(?<all>)/A'), function (Lexer $lexer) use ($secondState): void {
+            $lexer->setState($secondState);
+        });
+        $secondState->registerMatcher(new LexerSpecRegexMatcher('ToFirst', '/(?<all>)/A'), function (Lexer $lexer) use ($firstState): void {
+            $lexer->setState($firstState);
+        });
+
+        $this->beConstructedWith($firstState);
+
+        $this->shouldThrow(new ZeroLengthTokenLoopException('InitialState', 0))->during('tokenise', ['a']);
+    }
+}
+
+class LexerSpecRegexMatcher extends AbstractMatcher
+{
+    private RegexFinder $finder;
+
+    public function __construct(private string $type, string $pattern)
+    {
+        $this->finder = new RegexFinder($pattern);
+    }
+
+    public function match(string $text): ?MatchedText
+    {
+        if ($this->finder->find($text)) {
+            return new MatchedText($this->finder->getMatches(['all']));
+        }
+
+        return null;
+    }
+
+    public function getName(): string
+    {
+        return $this->type.'Matcher';
     }
 }

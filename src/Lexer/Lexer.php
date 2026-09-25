@@ -29,12 +29,27 @@ class Lexer
         $tokens = new TokenStream();
         $cursor = new Cursor($text);
 
+        $statesAtPosition = [];
+
         while (!$cursor->isEndOfText()) {
-            $token = $this->getState()->findMatchingToken($this, $cursor);
+            $state = $this->getState();
+
+            if (in_array($state, $statesAtPosition, true)) {
+                throw new ZeroLengthTokenLoopException($state->getName(), $cursor->getCurrentPosition());
+            }
+
+            $statesAtPosition[] = $state;
+
+            $token = $state->findMatchingToken($this, $cursor);
 
             $tokens->add($token);
 
-            $cursor->advance(mb_strlen($token->getValue('all')));
+            $length = mb_strlen($token->getValue('all'));
+
+            if (0 < $length) {
+                $cursor->advance($length);
+                $statesAtPosition = [];
+            }
         }
 
         return $tokens;
