@@ -41,7 +41,16 @@ abstract class AbstractState implements StateInterface
             $callback($lexer);
         }
 
-        return new Token(mb_substr($matcher, 0, -7), $matchedText->getAll());
+        return new Token($this->getTokenType($matcher), $matchedText->getAll());
+    }
+
+    private function getTokenType(string $matcherName): string
+    {
+        if (str_ends_with($matcherName, 'Matcher')) {
+            return mb_substr($matcherName, 0, -mb_strlen('Matcher'));
+        }
+
+        return $matcherName;
     }
 
     public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition): void
