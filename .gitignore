@@ -3,3 +3,4 @@ composer.lock
 /coverage.xml
 /bin
 /coverage/
+/.php-cs-fixer.cache
