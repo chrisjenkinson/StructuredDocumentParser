@@ -21,6 +21,11 @@ class Cursor
      */
     private $text;
 
+    /**
+     * @var int
+     */
+    private $byteOffset = 0;
+
     public function __construct(string $text)
     {
         $this->text            = $text;
@@ -34,7 +39,7 @@ class Cursor
             return '';
         }
 
-        return mb_substr($this->text, $this->currentPosition);
+        return substr($this->text, $this->byteOffset);
     }
 
     public function isEndOfText(): bool
@@ -44,7 +49,11 @@ class Cursor
 
     public function advance(int $length): void
     {
+        // A UTF-8 character is at most 4 bytes, so this slice always holds $length characters.
+        $consumed = mb_substr(substr($this->text, $this->byteOffset, $length * 4), 0, $length);
+
         $this->currentPosition += $length;
+        $this->byteOffset += strlen($consumed);
     }
 
     public function getCurrentPosition(): int
