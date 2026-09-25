@@ -28,15 +28,17 @@ class NodeTraverserSpec extends ObjectBehavior
         $nodeVisitor->afterTraverse($node)->shouldHaveBeenCalled();
     }
 
-    public function it_can_add_a_child(NodeInterface $node, NodeInterface $child, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2): void
+    public function it_puts_a_traversed_child_back_in_place(NodeInterface $node, NodeInterface $child, NodeVisitorInterface $nodeVisitor, NodeVisitorInterface $nodeVisitor2): void
     {
         $node->getNodes()->willReturn([$child]);
         $node->getAttributes()->willReturn([]);
 
         $child->getNodes()->willReturn([]);
         $child->getAttributes()->willReturn([]);
+        $child->getName()->willReturn('ChildNode');
 
-        $node->addNode($child)->shouldBeCalled();
+        $node->replaceNode($child)->shouldBeCalled();
+        $node->addNode($child)->shouldNotBeCalled();
 
         $this->addVisitor($nodeVisitor);
         $this->addVisitor($nodeVisitor2);

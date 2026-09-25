@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Node;
 
-interface NodeInterface
+use JsonSerializable;
+
+interface NodeInterface extends JsonSerializable
 {
     public function __toString(): string;
 
@@ -34,6 +36,8 @@ interface NodeInterface
     public function getNodes(): array;
 
     public function addNode(NodeInterface $node): void;
+
+    public function replaceNode(NodeInterface $node): void;
 
     public function removeNode(NodeInterface $node);
 }

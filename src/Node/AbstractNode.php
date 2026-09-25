@@ -21,7 +21,15 @@ abstract class AbstractNode implements NodeInterface
 
     public function __toString(): string
     {
-        return json_encode(['attributes' => $this->attributes, 'nodes' => $this->nodes], JSON_PRETTY_PRINT);
+        return json_encode($this, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @return array{attributes: array, nodes: NodeInterface[]}
+     */
+    public function jsonSerialize(): array
+    {
+        return ['attributes' => $this->attributes, 'nodes' => $this->nodes];
     }
 
     /**
@@ -49,7 +57,7 @@ abstract class AbstractNode implements NodeInterface
             return $this->nodes[$key];
         }
 
-        throw new RuntimeException(sprintf('No such node "%s"', $key));
+        throw new NodeNotFoundException($key);
     }
 
     /**
@@ -62,6 +70,19 @@ abstract class AbstractNode implements NodeInterface
 
     public function addNode(NodeInterface $node): void
     {
+        if ($this->hasNode($node->getName())) {
+            throw new DuplicateNodeException($node->getName());
+        }
+
+        $this->nodes[$node->getName()] = $node;
+    }
+
+    public function replaceNode(NodeInterface $node): void
+    {
+        if (!$this->hasNode($node->getName())) {
+            throw new NodeNotFoundException($node->getName());
+        }
+
         $this->nodes[$node->getName()] = $node;
     }
 
