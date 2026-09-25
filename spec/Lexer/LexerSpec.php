@@ -14,6 +14,7 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\SimpleTextMatcher;
 use chrisjenkinson\StructuredDocumentParser\State\InitialState;
 use chrisjenkinson\StructuredDocumentParser\State\NoTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
+use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 use PhpSpec\ObjectBehavior;
 
@@ -134,6 +135,19 @@ class LexerSpec extends ObjectBehavior
 
         $this->getState()->shouldReturn($origState);
         $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
+    }
+
+    public function it_gives_each_token_its_position(): void
+    {
+        $state = new InitialState();
+        $state->registerMatcher(new LexerSpecRegexMatcher('Line', '/(?<all>[^\n]*\n|[^\n]+)/A'));
+
+        $this->beConstructedWith($state);
+
+        $tokens = $this->tokenise("ab\ncd");
+
+        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(1, 1));
+        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(2, 1));
     }
 
     public function it_switches_state_on_a_zero_length_lookahead_match(): void

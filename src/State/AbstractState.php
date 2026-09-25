@@ -10,6 +10,7 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\Token;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
+use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use ReflectionClass;
 
 abstract class AbstractState implements StateInterface
@@ -26,11 +27,12 @@ abstract class AbstractState implements StateInterface
 
     public function findMatchingToken(Lexer $lexer, Cursor $cursor): TokenInterface
     {
-        $text = $cursor->getRemainingText();
+        $text     = $cursor->getRemainingText();
+        $position = new TokenPosition($cursor->getLine(), $cursor->getColumn());
 
         list($matchedText, $calledMatchers, $callbacks) = $this->runMatchers($text);
 
-        $this->guardAgainstWrongNumberOfMatches($matchedText, $text, $calledMatchers, $cursor->getCurrentPosition());
+        $this->guardAgainstWrongNumberOfMatches($matchedText, $text, $calledMatchers, $cursor->getCurrentPosition(), $position);
 
         $matcher = $calledMatchers[0];
         /** @var MatchedText $matchedText */
@@ -41,7 +43,11 @@ abstract class AbstractState implements StateInterface
             $callback($lexer);
         }
 
-        return new Token($this->getTokenType($matcher), $matchedText->getAll());
+        return new Token(
+            $this->getTokenType($matcher),
+            $matchedText->getAll(),
+            $position
+        );
     }
 
     private function getTokenType(string $matcherName): string
@@ -70,14 +76,14 @@ abstract class AbstractState implements StateInterface
         }
     }
 
-    public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition): void
+    public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition, TokenPosition $position): void
     {
         if (1 < count($matchedText)) {
-            throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText);
+            throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText, $position);
         }
 
         if (1 > count($matchedText)) {
-            throw new NoTokenFoundException($this->getName(), $currentPosition, $remainingText);
+            throw new NoTokenFoundException($this->getName(), $currentPosition, $remainingText, $position);
         }
     }
 

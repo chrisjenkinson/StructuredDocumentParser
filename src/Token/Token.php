@@ -29,10 +29,11 @@ class Token implements TokenInterface
      * @param string $type
      * @param mixed  $value
      */
-    public function __construct(string $type, $value)
+    public function __construct(string $type, $value, TokenPosition $position)
     {
-        $this->type  = $type;
-        $this->value = $value;
+        $this->type     = $type;
+        $this->value    = $value;
+        $this->position = $position;
     }
 
     public function __toString(): string
@@ -51,11 +52,6 @@ class Token implements TokenInterface
     public function getPosition(): TokenPosition
     {
         return $this->position;
-    }
-
-    public function setPosition(TokenPosition $position): void
-    {
-        $this->position = $position;
     }
 
     public function hasKey(string $key): bool

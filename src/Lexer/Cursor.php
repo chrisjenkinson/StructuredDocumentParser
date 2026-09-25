@@ -24,6 +24,16 @@ class Cursor
     /**
      * @var int
      */
+    private $line = 1;
+
+    /**
+     * @var int
+     */
+    private $column = 1;
+
+    /**
+     * @var int
+     */
     private $byteOffset = 0;
 
     public function __construct(string $text)
@@ -51,9 +61,27 @@ class Cursor
     {
         // A UTF-8 character is at most 4 bytes, so this slice always holds $length characters.
         $consumed = mb_substr(substr($this->text, $this->byteOffset, $length * 4), 0, $length);
+        $newlines = mb_substr_count($consumed, "\n");
+
+        if (0 < $newlines) {
+            $this->line  += $newlines;
+            $this->column = mb_strlen($consumed) - mb_strrpos($consumed, "\n");
+        } else {
+            $this->column += mb_strlen($consumed);
+        }
 
         $this->currentPosition += $length;
         $this->byteOffset += strlen($consumed);
+    }
+
+    public function getLine(): int
+    {
+        return $this->line;
+    }
+
+    public function getColumn(): int
+    {
+        return $this->column;
     }
 
     public function getCurrentPosition(): int
