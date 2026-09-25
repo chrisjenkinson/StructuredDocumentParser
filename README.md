@@ -175,4 +175,4 @@ composer cs-fix   # fix code style
 
 ## Licence
 
-See [LICENSE](LICENSE).
+GPL-3.0-or-later. See [LICENSE](LICENSE).
