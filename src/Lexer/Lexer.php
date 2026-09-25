@@ -9,25 +9,16 @@ use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 
 class Lexer
 {
-    /**
-     * @var StateInterface
-     */
-    private $initialState;
-
-    /**
-     * @var StateInterface
-     */
-    private $state;
+    private StateInterface $state;
 
     /**
      * @var StateInterface[]
      */
-    private $previousStates = [];
+    private array $previousStates = [];
 
-    public function __construct(StateInterface $initialState)
+    public function __construct(private readonly StateInterface $initialState)
     {
-        $this->initialState = $initialState;
-        $this->state        = $initialState;
+        $this->state = $initialState;
     }
 
     public function tokenise(string $text): TokenStream
@@ -52,10 +43,18 @@ class Lexer
      * States are compared by identity when detecting zero-length token loops, so reuse
      * state instances rather than creating new ones on each switch.
      */
-    public function setState(StateInterface $state): void
+    public function pushState(StateInterface $state): void
     {
         $this->previousStates[] = $this->state;
         $this->state            = $state;
+    }
+
+    /**
+     * @deprecated use pushState()
+     */
+    public function setState(StateInterface $state): void
+    {
+        $this->pushState($state);
     }
 
     public function getLastState(): StateInterface

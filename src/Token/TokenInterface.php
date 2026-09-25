@@ -11,14 +11,9 @@ interface TokenInterface
     /**
      * @return mixed[]
      */
-    public function getValues();
+    public function getValues(): array;
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getValue(string $key);
+    public function getValue(string $key): mixed;
 
     public function getType(): string;
 

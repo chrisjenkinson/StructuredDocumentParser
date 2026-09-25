@@ -10,14 +10,14 @@ use RuntimeException;
 abstract class AbstractNode implements NodeInterface
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
      * @var NodeInterface[]
      */
-    protected $nodes = [];
+    protected array $nodes = [];
 
     public function __toString(): string
     {
@@ -32,12 +32,7 @@ abstract class AbstractNode implements NodeInterface
         return ['attributes' => $this->attributes, 'nodes' => $this->nodes];
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getAttribute(string $key)
+    public function getAttribute(string $key): mixed
     {
         if (array_key_exists($key, $this->attributes)) {
             return $this->attributes[$key];
@@ -101,7 +96,7 @@ abstract class AbstractNode implements NodeInterface
         return $this->attributes;
     }
 
-    public function setAttribute(string $key, $value): void
+    public function setAttribute(string $key, mixed $value): void
     {
         $this->attributes[$key] = $value;
     }

@@ -15,7 +15,7 @@ class NodeTraverser
     /**
      * @var NodeVisitorInterface[]
      */
-    private $visitors = [];
+    private array $visitors = [];
 
     public function addVisitor(NodeVisitorInterface $visitor): void
     {

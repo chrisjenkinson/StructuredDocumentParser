@@ -172,7 +172,7 @@ class RecordAfterTraverseVisitor extends AbstractNodeVisitor
 
 class RemoveChildNodeVisitor extends AbstractNodeVisitor
 {
-    public function leaveNode(NodeInterface $node)
+    public function leaveNode(NodeInterface $node): NodeInterface|NodeVisitorAction|null
     {
         if (!$node instanceof ChildNode) {
             return null;
@@ -184,7 +184,7 @@ class RemoveChildNodeVisitor extends AbstractNodeVisitor
 
 class RemoveChildNodeWithActionVisitor extends AbstractNodeVisitor
 {
-    public function leaveNode(NodeInterface $node)
+    public function leaveNode(NodeInterface $node): NodeInterface|NodeVisitorAction|null
     {
         if (!$node instanceof ChildNode) {
             return null;

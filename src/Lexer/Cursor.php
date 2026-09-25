@@ -6,41 +6,19 @@ namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
 class Cursor
 {
-    /**
-     * @var int
-     */
-    private $currentPosition;
+    private int $currentPosition = 0;
 
-    /**
-     * @var int
-     */
-    private $textLength;
+    private readonly int $textLength;
 
-    /**
-     * @var string
-     */
-    private $text;
+    private int $line = 1;
 
-    /**
-     * @var int
-     */
-    private $line = 1;
+    private int $column = 1;
 
-    /**
-     * @var int
-     */
-    private $column = 1;
+    private int $byteOffset = 0;
 
-    /**
-     * @var int
-     */
-    private $byteOffset = 0;
-
-    public function __construct(string $text)
+    public function __construct(private readonly string $text)
     {
-        $this->text            = $text;
-        $this->currentPosition = 0;
-        $this->textLength      = mb_strlen($text);
+        $this->textLength = mb_strlen($text);
     }
 
     public function getRemainingText(): string

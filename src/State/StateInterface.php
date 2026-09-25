@@ -10,15 +10,7 @@ use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 
 interface StateInterface
 {
-    /**
-     * @param Lexer  $lexer
-     * @param Cursor $cursor
-     *
-     * @return TokenInterface|false
-     */
-    public function findMatchingToken(Lexer $lexer, Cursor $cursor);
-
-    public function runMatchers(string $text): array;
+    public function findMatchingToken(Lexer $lexer, Cursor $cursor): TokenInterface;
 
     public function getName(): string;
 }

@@ -12,45 +12,18 @@ use Throwable;
 class AmbiguousTokenFoundException extends RuntimeException
 {
     /**
-     * @var string
+     * @param string[]      $calledMatchers
+     * @param MatchedText[] $matchedTokens
      */
-    private $stateName;
-
-    /**
-     * @var string
-     */
-    private $text;
-
-    /**
-     * @var array
-     */
-    private $calledMatchers;
-
-    /**
-     * @var array
-     */
-    private $matchedTokens;
-
-    /**
-     * @var TokenPosition
-     */
-    private $position;
-
     public function __construct(
-        string $stateName,
-        string $text,
-        array $calledMatchers,
-        array $matchedTokens,
-        TokenPosition $position,
+        private readonly string $stateName,
+        private readonly string $text,
+        private readonly array $calledMatchers,
+        private readonly array $matchedTokens,
+        private readonly TokenPosition $position,
         int $code = 0,
         ?Throwable $previous = null
     ) {
-        $this->stateName      = $stateName;
-        $this->text           = $text;
-        $this->calledMatchers = $calledMatchers;
-        $this->matchedTokens  = $matchedTokens;
-        $this->position       = $position;
-
         $matches = array_map(function (string $matcherName, MatchedText $matchedText): string {
             return sprintf('%s (%s)', $matcherName, TextExcerpt::of($matchedText->getAll()['all']));
         }, $calledMatchers, $matchedTokens);

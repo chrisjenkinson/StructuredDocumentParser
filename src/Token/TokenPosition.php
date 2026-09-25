@@ -6,20 +6,10 @@ namespace chrisjenkinson\StructuredDocumentParser\Token;
 
 class TokenPosition
 {
-    /**
-     * @var int
-     */
-    private $line;
-
-    /**
-     * @var int
-     */
-    private $column;
-
-    public function __construct(int $line, int $column)
-    {
-        $this->line   = $line;
-        $this->column = $column;
+    public function __construct(
+        private readonly int $line,
+        private readonly int $column
+    ) {
     }
 
     public function getLine(): int

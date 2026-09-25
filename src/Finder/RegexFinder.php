@@ -7,18 +7,12 @@ namespace chrisjenkinson\StructuredDocumentParser\Finder;
 class RegexFinder
 {
     /**
-     * @var string
+     * @var mixed[]
      */
-    private $pattern;
+    private array $matches = [];
 
-    /**
-     * @var array
-     */
-    private $matches = [];
-
-    public function __construct(string $pattern)
+    public function __construct(private readonly string $pattern)
     {
-        $this->pattern = $pattern;
     }
 
     public function find(string $text): bool

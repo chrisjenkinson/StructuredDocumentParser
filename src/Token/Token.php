@@ -4,36 +4,16 @@ declare(strict_types=1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
-use RuntimeException;
-
 class Token implements TokenInterface
 {
     /**
-     * @var string
+     * @param mixed[] $value
      */
-    private $type;
-
-    /**
-     * @var mixed[]
-     */
-    private $value = [];
-
-    /**
-     * @var TokenPosition
-     */
-    private $position;
-
-    /**
-     * Token constructor.
-     *
-     * @param string $type
-     * @param mixed  $value
-     */
-    public function __construct(string $type, $value, TokenPosition $position)
-    {
-        $this->type     = $type;
-        $this->value    = $value;
-        $this->position = $position;
+    public function __construct(
+        private readonly string $type,
+        private readonly array $value,
+        private readonly TokenPosition $position
+    ) {
     }
 
     public function __toString(): string
@@ -64,15 +44,10 @@ class Token implements TokenInterface
         return $this->type;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getValue(string $key)
+    public function getValue(string $key): mixed
     {
         if (!array_key_exists($key, $this->value)) {
-            throw new RuntimeException(sprintf('No such key %s exists', $key));
+            throw new NonexistentKeyException(sprintf('No such key %s exists', $key));
         }
 
         return $this->value[$key];

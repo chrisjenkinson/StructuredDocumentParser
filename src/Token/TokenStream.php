@@ -12,12 +12,9 @@ class TokenStream implements Countable
     /**
      * @var TokenInterface[]
      */
-    private $tokens = [];
+    private array $tokens = [];
 
-    /**
-     * @var int
-     */
-    private $current = 0;
+    private int $current = 0;
 
     public function __toString(): string
     {
