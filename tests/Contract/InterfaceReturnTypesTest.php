@@ -8,6 +8,8 @@ use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
+use chrisjenkinson\StructuredDocumentParser\Visitor\VisitableInterface;
+use chrisjenkinson\StructuredDocumentParser\Visitor\VisitorInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -28,6 +30,7 @@ class InterfaceReturnTypesTest extends TestCase
             'NodeVisitorInterface::leaveNode'   => [NodeVisitorInterface::class, 'leaveNode', 'chrisjenkinson\StructuredDocumentParser\Node\NodeInterface|chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorAction|null'],
             'TokenInterface::getValues'         => [TokenInterface::class, 'getValues', 'array'],
             'TokenInterface::getValue'          => [TokenInterface::class, 'getValue', 'mixed'],
+            'VisitableInterface::accept'        => [VisitableInterface::class, 'accept', 'mixed'],
         ];
     }
 
@@ -35,5 +38,12 @@ class InterfaceReturnTypesTest extends TestCase
     public function testItDeclaresANativeReturnType(string $class, string $method, string $expectedType): void
     {
         Assert::assertSame($expectedType, (string) (new ReflectionMethod($class, $method))->getReturnType());
+    }
+
+    public function testVisitableAcceptsAVisitor(): void
+    {
+        $parameter = (new ReflectionMethod(VisitableInterface::class, 'accept'))->getParameters()[0];
+
+        Assert::assertSame(VisitorInterface::class, (string) $parameter->getType());
     }
 }

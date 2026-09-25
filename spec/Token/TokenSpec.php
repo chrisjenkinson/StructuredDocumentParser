@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\Token;
 
+use chrisjenkinson\StructuredDocumentParser\Token\NonexistentKeyException;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use PhpSpec\ObjectBehavior;
 
@@ -26,7 +27,7 @@ class TokenSpec extends ObjectBehavior
 
     public function it_throws_an_exception_if_no_key(): void
     {
-        $this->shouldThrow(\RuntimeException::class)->duringGetValue('nonexistent');
+        $this->shouldThrow(NonexistentKeyException::class)->duringGetValue('nonexistent');
     }
 
     public function it_can_return_all_values(): void

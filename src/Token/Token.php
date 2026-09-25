@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace chrisjenkinson\StructuredDocumentParser\Token;
 
-use RuntimeException;
-
 class Token implements TokenInterface
 {
     /**
@@ -67,7 +65,7 @@ class Token implements TokenInterface
     public function getValue(string $key): mixed
     {
         if (!array_key_exists($key, $this->value)) {
-            throw new RuntimeException(sprintf('No such key %s exists', $key));
+            throw new NonexistentKeyException(sprintf('No such key %s exists', $key));
         }
 
         return $this->value[$key];
