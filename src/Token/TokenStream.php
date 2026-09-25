@@ -55,11 +55,11 @@ class TokenStream implements Countable
      */
     public function expectTokenType(string $expectedType): bool
     {
-        if (0 === count($this)) {
+        $currentToken = $this->getCurrentToken();
+
+        if (null === $currentToken) {
             throw new RuntimeException(sprintf('No more tokens; expected %s', $expectedType));
         }
-
-        $currentToken = $this->getCurrentToken();
 
         if ($expectedType !== $currentToken->getType()) {
             throw new RuntimeException(
@@ -77,11 +77,11 @@ class TokenStream implements Countable
      */
     public function expectTokenTypes(array $expectedTypes): bool
     {
-        if (0 === count($this)) {
+        $currentToken = $this->getCurrentToken();
+
+        if (null === $currentToken) {
             throw new RuntimeException(sprintf('No more tokens; expected any of %s', implode(', ', $expectedTypes)));
         }
-
-        $currentToken = $this->getCurrentToken();
 
         $expected = array_filter($expectedTypes, static fn ($expectedType) => $expectedType === $currentToken->getType());
 

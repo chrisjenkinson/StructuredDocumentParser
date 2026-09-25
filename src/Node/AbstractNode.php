@@ -25,7 +25,7 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * @return array{attributes: array, nodes: NodeInterface[]}
+     * @return array{attributes: array<string, mixed>, nodes: NodeInterface[]}
      */
     public function jsonSerialize(): array
     {

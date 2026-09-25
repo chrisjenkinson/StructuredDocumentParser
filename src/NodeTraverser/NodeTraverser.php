@@ -65,6 +65,11 @@ class NodeTraverser
         return $node;
     }
 
+    /**
+     * @param mixed[] $children
+     *
+     * @return mixed[]
+     */
     public function traverseChildren(array $children): array
     {
         $isList = array_is_list($children);
@@ -131,6 +136,9 @@ class NodeTraverser
         }, $children);
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     private function runTraverseChildrenOnAttributes(NodeInterface $node, array $attributes): void
     {
         array_walk($attributes, function ($attribute, $key) use (&$node): void {

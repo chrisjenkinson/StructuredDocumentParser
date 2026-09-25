@@ -24,11 +24,11 @@ class AmbiguousTokenFoundException extends RuntimeException
         int $code = 0,
         ?Throwable $previous = null
     ) {
-        $matches = array_map(
-            static fn (string $matcherName, MatchedText $matchedText): string => sprintf('%s (%s)', $matcherName, TextExcerpt::of($matchedText->getAll()['all'])),
-            $calledMatchers,
-            $matchedTokens
-        );
+        $matches = array_map(static function (string $matcherName, MatchedText $matchedText): string {
+            $all = $matchedText->getAll()['all'] ?? null;
+
+            return sprintf('%s (%s)', $matcherName, TextExcerpt::of(is_string($all) ? $all : ''));
+        }, $calledMatchers, $matchedTokens);
 
         $message = sprintf(
             'Ambiguous token found with state %s at line %d, column %d: matchers %s',
@@ -41,11 +41,17 @@ class AmbiguousTokenFoundException extends RuntimeException
         parent::__construct($message, $code, $previous);
     }
 
+    /**
+     * @return string[]
+     */
     public function getCalledMatchers(): array
     {
         return $this->calledMatchers;
     }
 
+    /**
+     * @return MatchedText[]
+     */
     public function getMatchedTokens(): array
     {
         return $this->matchedTokens;

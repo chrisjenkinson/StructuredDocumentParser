@@ -25,6 +25,9 @@ class MatchedText
         return null;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getAll(): array
     {
         return $this->matches;
