@@ -12,7 +12,5 @@ interface StateInterface
 {
     public function findMatchingToken(Lexer $lexer, Cursor $cursor): TokenInterface;
 
-    public function runMatchers(string $text): array;
-
     public function getName(): string;
 }

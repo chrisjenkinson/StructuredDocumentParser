@@ -11,6 +11,7 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\Token;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
+use Closure;
 use ReflectionClass;
 
 abstract class AbstractState implements StateInterface
@@ -30,22 +31,15 @@ abstract class AbstractState implements StateInterface
         $text     = $cursor->getRemainingText();
         $position = new TokenPosition($cursor->getLine(), $cursor->getColumn());
 
-        list($matchedText, $calledMatchers, $callbacks) = $this->runMatchers($text);
+        $match = $this->findSingleMatch($this->runMatchers($text), $text, $cursor->getCurrentPosition(), $position);
 
-        $this->guardAgainstWrongNumberOfMatches($matchedText, $text, $calledMatchers, $cursor->getCurrentPosition(), $position);
-
-        $matcher = $calledMatchers[0];
-        /** @var MatchedText $matchedText */
-        $matchedText = $matchedText[0];
-        $callback    = $callbacks[0];
-
-        if (is_callable($callback)) {
-            $callback($lexer);
+        if (null !== $match->callback) {
+            ($match->callback)($lexer);
         }
 
         return new Token(
-            $this->getTokenType($matcher),
-            $matchedText->getAll(),
+            $this->getTokenType($match->matcherName),
+            $match->matchedText->getAll(),
             $position
         );
     }
@@ -76,37 +70,52 @@ abstract class AbstractState implements StateInterface
         }
     }
 
-    public function guardAgainstWrongNumberOfMatches(array $matchedText, string $remainingText, array $calledMatchers, int $currentPosition, TokenPosition $position): void
+    /**
+     * @param MatcherMatch[] $matches
+     */
+    private function findSingleMatch(array $matches, string $remainingText, int $currentPosition, TokenPosition $position): MatcherMatch
     {
-        if (1 < count($matchedText)) {
-            throw new AmbiguousTokenFoundException($this->getName(), $remainingText, $calledMatchers, $matchedText, $position);
+        if (1 < count($matches)) {
+            throw new AmbiguousTokenFoundException(
+                $this->getName(),
+                $remainingText,
+                array_map(fn (MatcherMatch $match): string => $match->matcherName, $matches),
+                array_map(fn (MatcherMatch $match): MatchedText => $match->matchedText, $matches),
+                $position
+            );
         }
 
-        if (1 > count($matchedText)) {
+        if (1 > count($matches)) {
             throw new NoTokenFoundException($this->getName(), $currentPosition, $remainingText, $position);
         }
+
+        return $matches[0];
     }
 
-    public function runMatchers(string $text): array
+    /**
+     * @return MatcherMatch[]
+     */
+    private function runMatchers(string $text): array
     {
-        $matchedTokens  = [];
-        $calledMatchers = [];
-        $callbacks      = [];
+        $matches = [];
 
-        array_map(function (array $matcherAndCallback) use ($text, &$matchedTokens, &$calledMatchers, &$callbacks): void {
-            $matcher  = $matcherAndCallback['matcher'];
-            $callback = $matcherAndCallback['callback'];
+        foreach ($this->matchers as ['matcher' => $matcher, 'callback' => $callback]) {
+            $matchedText = $matcher->match($text);
 
-            if ($matches = $matcher->match($text)) {
-                $this->guardAgainstInvalidMatchedText($matcher->getName(), $matches, $text);
-
-                $matchedTokens[]  = $matches;
-                $calledMatchers[] = $matcher->getName();
-                $callbacks[]      = $callback;
+            if (null === $matchedText) {
+                continue;
             }
-        }, $this->matchers);
 
-        return [$matchedTokens, $calledMatchers, $callbacks];
+            $this->guardAgainstInvalidMatchedText($matcher->getName(), $matchedText, $text);
+
+            $matches[] = new MatcherMatch(
+                $matcher->getName(),
+                $matchedText,
+                null === $callback ? null : Closure::fromCallable($callback)
+            );
+        }
+
+        return $matches;
     }
 
     public function getName(): string
