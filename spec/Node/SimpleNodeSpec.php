@@ -7,7 +7,6 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\Node;
 use chrisjenkinson\StructuredDocumentParser\Node\DuplicateNodeException;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeNotFoundException;
-use chrisjenkinson\StructuredDocumentParser\Node\SimpleNode;
 use PhpSpec\ObjectBehavior;
 use RuntimeException;
 
@@ -75,44 +74,28 @@ class SimpleNodeSpec extends ObjectBehavior
         $this->shouldThrow(NodeNotFoundException::class)->duringReplaceNode($node);
     }
 
-    public function it_exports_a_tree_as_a_string(): void
+    public function it_exports_a_tree_as_a_string(NodeInterface $child, NodeInterface $listItem): void
     {
-        $child      = new SimpleNode();
-        $grandchild = new SimpleNode();
-        $listItem   = new SimpleNode();
-
-        $grandchild->setAttribute('depth', 2);
-        $listItem->setAttribute('item', 'first');
-        $child->addNode($grandchild);
-        $child->setAttribute('items', [$listItem]);
+        $child->getName()->willReturn('ChildNode');
+        $child->jsonSerialize()->willReturn(['exported' => 'child']);
+        $listItem->jsonSerialize()->willReturn(['exported' => 'list item']);
 
         $this->setAttribute('something', 'result');
+        $this->setAttribute('items', [$listItem]);
         $this->addNode($child);
 
         $this->__toString()->shouldReturn('{
     "attributes": {
-        "something": "result"
+        "something": "result",
+        "items": [
+            {
+                "exported": "list item"
+            }
+        ]
     },
     "nodes": {
-        "SimpleNode": {
-            "attributes": {
-                "items": [
-                    {
-                        "attributes": {
-                            "item": "first"
-                        },
-                        "nodes": []
-                    }
-                ]
-            },
-            "nodes": {
-                "SimpleNode": {
-                    "attributes": {
-                        "depth": 2
-                    },
-                    "nodes": []
-                }
-            }
+        "ChildNode": {
+            "exported": "child"
         }
     }
 }');

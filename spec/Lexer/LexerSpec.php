@@ -4,86 +4,44 @@ declare(strict_types=1);
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\Lexer;
 
-use chrisjenkinson\StructuredDocumentParser\Finder\RegexFinder;
-use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
+use chrisjenkinson\StructuredDocumentParser\Lexer\Cursor;
 use chrisjenkinson\StructuredDocumentParser\Lexer\NoPreviousStateException;
 use chrisjenkinson\StructuredDocumentParser\Lexer\ZeroLengthTokenLoopException;
-use chrisjenkinson\StructuredDocumentParser\Matcher\AbstractMatcher;
-use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
-use chrisjenkinson\StructuredDocumentParser\Matcher\SimpleTextMatcher;
-use chrisjenkinson\StructuredDocumentParser\State\InitialState;
-use chrisjenkinson\StructuredDocumentParser\State\NoTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
+use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
-use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
-use PhpSpec\Exception\Example\FailureException;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use RuntimeException;
 
 class LexerSpec extends ObjectBehavior
 {
     public function let(StateInterface $state): void
     {
-        $this->beConstructedWith($state);
-    }
-
-    public function it_has_a_state(): void
-    {
-        $this->getState()->shouldBeAnInstanceOf(StateInterface::class);
-    }
-
-    public function it_can_tokenise(): void
-    {
-        $state = new InitialState();
-        $state->registerMatcher(new SimpleTextMatcher());
+        $state->getName()->willReturn('FirstState');
 
         $this->beConstructedWith($state);
-
-        $this->tokenise('1234')->shouldReturnAnInstanceOf(TokenStream::class);
     }
 
-    public function it_can_switch_state(): void
+    public function it_has_a_state(StateInterface $state): void
     {
-        $origState = new InitialState();
-        $origState->registerMatcher(new SimpleTextMatcher());
+        $this->getState()->shouldReturn($state);
+    }
 
-        $newState = new InitialState();
-        $newState->registerMatcher(new SimpleTextMatcher());
-
-        $this->beConstructedWith($origState);
-
-        $this->getState()->shouldReturn($origState);
-
+    public function it_pushes_a_state_and_records_the_previous_one(StateInterface $state, StateInterface $newState): void
+    {
         $this->pushState($newState);
 
         $this->getState()->shouldReturn($newState);
+        $this->getLastState()->shouldReturn($state);
     }
 
-    public function it_records_previous_states(): void
+    public function it_keeps_set_state_as_an_alias_for_push_state(StateInterface $state, StateInterface $newState): void
     {
-        $origState = new InitialState();
-        $origState->registerMatcher(new SimpleTextMatcher());
-
-        $newState = new InitialState();
-        $newState->registerMatcher(new SimpleTextMatcher());
-
-        $this->beConstructedWith($origState);
-
-        $this->pushState($newState);
-
-        $this->getLastState()->shouldReturn($origState);
-    }
-
-    public function it_keeps_set_state_as_an_alias_for_push_state(): void
-    {
-        $origState = new InitialState();
-        $newState  = new InitialState();
-
-        $this->beConstructedWith($origState);
-
         $this->setState($newState);
 
         $this->getState()->shouldReturn($newState);
-        $this->getLastState()->shouldReturn($origState);
+        $this->getLastState()->shouldReturn($state);
     }
 
     public function it_throws_if_there_is_no_previous_state(): void
@@ -91,25 +49,19 @@ class LexerSpec extends ObjectBehavior
         $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
     }
 
-    public function it_pops_back_to_the_previous_state(): void
+    public function it_pops_back_to_the_previous_state(StateInterface $state, StateInterface $secondState, StateInterface $thirdState): void
     {
-        $firstState  = new InitialState();
-        $secondState = new InitialState();
-        $thirdState  = new InitialState();
-
-        $this->beConstructedWith($firstState);
-
         $this->pushState($secondState);
         $this->pushState($thirdState);
 
         $this->popState();
 
         $this->getState()->shouldReturn($secondState);
-        $this->getLastState()->shouldReturn($firstState);
+        $this->getLastState()->shouldReturn($state);
 
         $this->popState();
 
-        $this->getState()->shouldReturn($firstState);
+        $this->getState()->shouldReturn($state);
         $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
     }
 
@@ -118,148 +70,118 @@ class LexerSpec extends ObjectBehavior
         $this->shouldThrow(NoPreviousStateException::class)->during('popState');
     }
 
-    public function it_gives_the_same_tokens_when_tokenising_the_same_text_twice(): void
+    public function it_asks_the_state_for_tokens_until_the_text_is_consumed(StateInterface $state, TokenInterface $first, TokenInterface $second): void
     {
-        $origState = new InitialState();
-        $newState  = new InitialState();
+        $first->getText()->willReturn('ab');
+        $second->getText()->willReturn('c');
 
-        $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'), static function (Lexer $lexer) use ($newState): void {
-            $lexer->pushState($newState);
-        });
-        $newState->registerMatcher(new LexerSpecRegexMatcher('Other', '/(?<all>a)/A'));
+        $state->findMatchingToken($this, $this->cursorAt('abc'))->willReturn($first);
+        $state->findMatchingToken($this, $this->cursorAt('c'))->willReturn($second);
 
-        $this->beConstructedWith($origState);
+        $tokens = $this->tokenise('abc');
 
-        $this->tokenise('a')->__toString()->shouldReturn('Letter (a)');
-        $this->tokenise('a')->__toString()->shouldReturn('Letter (a)');
+        $tokens->consumeToken()->shouldReturn($first);
+        $tokens->consumeToken()->shouldReturn($second);
+        $tokens->shouldHaveCount(0);
     }
 
-    public function it_restores_the_initial_state_after_tokenising(): void
+    public function it_starts_the_cursor_at_line_one_column_one_by_default(StateInterface $state, TokenInterface $token): void
     {
-        $origState = new InitialState();
-        $newState  = new InitialState();
+        $token->getText()->willReturn('a');
 
-        $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'), static function (Lexer $lexer) use ($newState): void {
-            $lexer->pushState($newState);
+        $state->findMatchingToken($this, Argument::that(static fn (Cursor $cursor): bool => 1 === $cursor->getLine() && 1 === $cursor->getColumn()))
+            ->shouldBeCalled()
+            ->willReturn($token);
+
+        $this->tokenise('a');
+    }
+
+    public function it_starts_the_cursor_at_a_given_position(StateInterface $state, TokenInterface $token): void
+    {
+        $token->getText()->willReturn('a');
+
+        $state->findMatchingToken($this, Argument::that(static fn (Cursor $cursor): bool => 10 === $cursor->getLine() && 5 === $cursor->getColumn()))
+            ->shouldBeCalled()
+            ->willReturn($token);
+
+        $this->tokenise('a', new TokenPosition(10, 5));
+    }
+
+    public function it_allows_a_zero_length_token_that_switches_state(StateInterface $state, StateInterface $newState, TokenInterface $lookahead, TokenInterface $letter): void
+    {
+        $lookahead->getText()->willReturn('');
+        $letter->getText()->willReturn('a');
+
+        $state->findMatchingToken($this, Argument::type(Cursor::class))->will(static function (array $arguments) use ($newState, $lookahead): TokenInterface {
+            $arguments[0]->pushState($newState->getWrappedObject());
+
+            return $lookahead->getWrappedObject();
+        });
+        $newState->findMatchingToken($this, Argument::type(Cursor::class))->willReturn($letter);
+
+        $this->tokenise('a')->shouldHaveCount(2);
+    }
+
+    public function it_throws_if_a_zero_length_token_does_not_switch_state(StateInterface $state, TokenInterface $token): void
+    {
+        $token->getText()->willReturn('');
+
+        $state->findMatchingToken($this, Argument::type(Cursor::class))->willReturn($token);
+
+        $this->shouldThrow(new ZeroLengthTokenLoopException('FirstState', 0))->during('tokenise', ['a']);
+    }
+
+    public function it_throws_if_zero_length_tokens_return_to_a_state_without_advancing(StateInterface $state, StateInterface $secondState, TokenInterface $token): void
+    {
+        $token->getText()->willReturn('');
+
+        $state->findMatchingToken($this, Argument::type(Cursor::class))->will(static function (array $arguments) use ($secondState, $token): TokenInterface {
+            $arguments[0]->pushState($secondState->getWrappedObject());
+
+            return $token->getWrappedObject();
+        });
+        $secondState->findMatchingToken($this, Argument::type(Cursor::class))->will(static function (array $arguments) use ($state, $token): TokenInterface {
+            $arguments[0]->pushState($state->getWrappedObject());
+
+            return $token->getWrappedObject();
         });
 
-        $this->beConstructedWith($origState);
+        $this->shouldThrow(new ZeroLengthTokenLoopException('FirstState', 0))->during('tokenise', ['a']);
+    }
 
-        $this->shouldThrow(NoTokenFoundException::class)->during('tokenise', ['ab']);
+    public function it_starts_each_call_from_the_initial_state(StateInterface $state, StateInterface $newState, TokenInterface $token): void
+    {
+        $token->getText()->willReturn('a');
 
-        $this->getState()->shouldReturn($origState);
+        $state->findMatchingToken($this, Argument::type(Cursor::class))->will(static function (array $arguments) use ($newState, $token): TokenInterface {
+            $arguments[0]->pushState($newState->getWrappedObject());
+
+            return $token->getWrappedObject();
+        });
+
+        $this->tokenise('a');
+        $this->tokenise('a');
+
+        $state->findMatchingToken($this, Argument::type(Cursor::class))->shouldHaveBeenCalledTimes(2);
+        $newState->findMatchingToken(Argument::cetera())->shouldNotHaveBeenCalled();
+    }
+
+    public function it_restores_the_initial_state_when_tokenising_fails(StateInterface $state, StateInterface $newState): void
+    {
+        $state->findMatchingToken($this, Argument::type(Cursor::class))->will(static function (array $arguments) use ($newState): never {
+            $arguments[0]->pushState($newState->getWrappedObject());
+
+            throw new RuntimeException('No token');
+        });
+
+        $this->shouldThrow(RuntimeException::class)->during('tokenise', ['a']);
+
+        $this->getState()->shouldReturn($state);
         $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
     }
 
-    public function it_gives_each_token_its_position(): void
+    private function cursorAt(string $remainingText): Argument\Token\CallbackToken
     {
-        $state = new InitialState();
-        $state->registerMatcher(new LexerSpecRegexMatcher('Line', '/(?<all>[^\n]*\n|[^\n]+)/A'));
-
-        $this->beConstructedWith($state);
-
-        $tokens = $this->tokenise("ab\ncd");
-
-        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(1, 1));
-        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(2, 1));
-    }
-
-    public function it_can_start_from_a_given_position(): void
-    {
-        $state = new InitialState();
-        $state->registerMatcher(new LexerSpecRegexMatcher('Line', '/(?<all>[^\n]*\n|[^\n]+)/A'));
-
-        $this->beConstructedWith($state);
-
-        $tokens = $this->tokenise("ab\ncd", new TokenPosition(10, 5));
-
-        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(10, 5));
-        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(11, 1));
-    }
-
-    public function it_reports_errors_relative_to_the_given_position(): void
-    {
-        $state = new InitialState();
-
-        $this->beConstructedWith($state);
-
-        try {
-            $this->getWrappedObject()->tokenise('ab', new TokenPosition(10, 5));
-        } catch (NoTokenFoundException $exception) {
-            if (10 !== $exception->getPosition()->getLine() || 5 !== $exception->getPosition()->getColumn()) {
-                throw new FailureException('Expected the error at line 10, column 5.');
-            }
-
-            return;
-        }
-
-        throw new FailureException('Expected a NoTokenFoundException.');
-    }
-
-    public function it_switches_state_on_a_zero_length_lookahead_match(): void
-    {
-        $origState = new InitialState();
-        $newState  = new InitialState();
-
-        $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'));
-        $origState->registerMatcher(new LexerSpecRegexMatcher('Lookahead', '/(?<all>)(?=b)/A'), static function (Lexer $lexer) use ($newState): void {
-            $lexer->pushState($newState);
-        });
-        $newState->registerMatcher(new LexerSpecRegexMatcher('Rest', '/(?<all>b+)/A'));
-
-        $this->beConstructedWith($origState);
-
-        $this->tokenise('abb')->__toString()->shouldReturn("Letter (a)\nLookahead ()\nRest (bb)");
-    }
-
-    public function it_throws_if_a_zero_length_match_does_not_switch_state(): void
-    {
-        $state = new InitialState();
-        $state->registerMatcher(new LexerSpecRegexMatcher('Empty', '/(?<all>)/A'));
-
-        $this->beConstructedWith($state);
-
-        $this->shouldThrow(new ZeroLengthTokenLoopException('InitialState', 0))->during('tokenise', ['a']);
-    }
-
-    public function it_throws_if_zero_length_matches_return_to_a_state_without_advancing(): void
-    {
-        $firstState  = new InitialState();
-        $secondState = new InitialState();
-
-        $firstState->registerMatcher(new LexerSpecRegexMatcher('ToSecond', '/(?<all>)/A'), static function (Lexer $lexer) use ($secondState): void {
-            $lexer->pushState($secondState);
-        });
-        $secondState->registerMatcher(new LexerSpecRegexMatcher('ToFirst', '/(?<all>)/A'), static function (Lexer $lexer) use ($firstState): void {
-            $lexer->pushState($firstState);
-        });
-
-        $this->beConstructedWith($firstState);
-
-        $this->shouldThrow(new ZeroLengthTokenLoopException('InitialState', 0))->during('tokenise', ['a']);
-    }
-}
-
-class LexerSpecRegexMatcher extends AbstractMatcher
-{
-    private RegexFinder $finder;
-
-    public function __construct(private string $type, string $pattern)
-    {
-        $this->finder = new RegexFinder($pattern);
-    }
-
-    public function match(string $text): ?MatchedText
-    {
-        if ($this->finder->find($text)) {
-            return new MatchedText($this->finder->getMatches(['all']));
-        }
-
-        return null;
-    }
-
-    public function getName(): string
-    {
-        return $this->type . 'Matcher';
+        return Argument::that(static fn (Cursor $cursor): bool => $remainingText === $cursor->getRemainingText());
     }
 }
