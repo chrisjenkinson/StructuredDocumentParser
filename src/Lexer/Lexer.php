@@ -68,6 +68,10 @@ class Lexer
 
     public function getLastState(): StateInterface
     {
+        if ([] === $this->previousStates) {
+            throw new NoPreviousStateException();
+        }
+
         return end($this->previousStates);
     }
 }

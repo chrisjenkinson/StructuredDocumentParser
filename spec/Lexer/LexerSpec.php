@@ -6,6 +6,7 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\Lexer;
 
 use chrisjenkinson\StructuredDocumentParser\Finder\RegexFinder;
 use chrisjenkinson\StructuredDocumentParser\Lexer\Lexer;
+use chrisjenkinson\StructuredDocumentParser\Lexer\NoPreviousStateException;
 use chrisjenkinson\StructuredDocumentParser\Lexer\ZeroLengthTokenLoopException;
 use chrisjenkinson\StructuredDocumentParser\Matcher\AbstractMatcher;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
@@ -67,6 +68,11 @@ class LexerSpec extends ObjectBehavior
         $this->setState($newState);
 
         $this->getLastState()->shouldReturn($origState);
+    }
+
+    public function it_throws_if_there_is_no_previous_state(): void
+    {
+        $this->shouldThrow(NoPreviousStateException::class)->during('getLastState');
     }
 
     public function it_switches_state_on_a_zero_length_lookahead_match(): void
