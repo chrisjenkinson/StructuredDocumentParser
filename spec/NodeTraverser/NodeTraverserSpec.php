@@ -6,6 +6,7 @@ namespace spec\chrisjenkinson\StructuredDocumentParser\NodeTraverser;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use chrisjenkinson\StructuredDocumentParser\NodeTraverser\NodeTraverser;
+use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorAction;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 use PhpSpec\ObjectBehavior;
 
@@ -55,7 +56,7 @@ class NodeTraverserSpec extends ObjectBehavior
         $child->getAttributes()->willReturn([]);
 
         $nodeVisitor->enterNode($child)->willReturn(null);
-        $nodeVisitor->leaveNode($child)->willReturn(NodeTraverser::REMOVE_NODE);
+        $nodeVisitor->leaveNode($child)->willReturn(NodeVisitorAction::RemoveNode);
 
         $nodeVisitor->beforeTraverse($node)->willReturn(null);
         $nodeVisitor->enterNode($node)->willReturn(null);
@@ -78,7 +79,7 @@ class NodeTraverserSpec extends ObjectBehavior
         $this->addVisitor($nodeVisitor);
         $this->addVisitor($nodeVisitor2);
 
-        $node->setAttribute('attr', ['something' => true])->shouldBeCalled();
+        $node->setAttribute('attr', ['something' => true])->shouldNotBeCalled();
 
         $this->traverse($node)->shouldReturn($node);
     }

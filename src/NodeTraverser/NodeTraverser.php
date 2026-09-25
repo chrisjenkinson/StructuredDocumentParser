@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace chrisjenkinson\StructuredDocumentParser\NodeTraverser;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
+use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorAction;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 
 class NodeTraverser
 {
-    public const REMOVE_NODE = false;
+    public const REMOVE_NODE = NodeVisitorAction::RemoveNode;
 
     /**
      * @var NodeVisitorInterface[]
@@ -21,7 +22,10 @@ class NodeTraverser
         $this->visitors[] = $visitor;
     }
 
-    public function traverse(NodeInterface $node): bool|NodeInterface|null
+    /**
+     * @return NodeInterface|null the traversed node, or null if a visitor removed it
+     */
+    public function traverse(NodeInterface $node): ?NodeInterface
     {
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $before = $nodeVisitor->beforeTraverse($node)) {
@@ -31,6 +35,10 @@ class NodeTraverser
         }, $this->visitors);
 
         $node = $this->traverseNode($node);
+
+        if (NodeVisitorAction::RemoveNode === $node) {
+            return null;
+        }
 
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $after = $nodeVisitor->afterTraverse($node)) {
@@ -42,7 +50,7 @@ class NodeTraverser
         return $node;
     }
 
-    public function traverseNode(NodeInterface $node): bool|NodeInterface
+    public function traverseNode(NodeInterface $node): NodeInterface|NodeVisitorAction
     {
         $node = $this->runEnterNodeVisitors($node);
 
@@ -59,25 +67,31 @@ class NodeTraverser
 
     public function traverseChildren(array $children): array
     {
-        $keysToRemove = [];
+        $isList = array_is_list($children);
 
-        array_walk($children, function ($child, $key) use (&$keysToRemove, &$children): void {
+        foreach ($children as $key => $child) {
+            if (is_array($child)) {
+                $children[$key] = $this->traverseChildren($child);
+
+                continue;
+            }
+
             if (!$child instanceof NodeInterface) {
-                return;
+                continue;
             }
 
             $child = $this->traverseNode($child);
 
-            if (self::REMOVE_NODE === $child) {
-                $keysToRemove[$key] = $key;
+            if (NodeVisitorAction::RemoveNode === $child) {
+                unset($children[$key]);
+
+                continue;
             }
 
-            if (null !== $child) {
-                $children[$key] = $child;
-            }
-        });
+            $children[$key] = $child;
+        }
 
-        return array_diff_key($children, $keysToRemove);
+        return $isList ? array_values($children) : $children;
     }
 
     private function runEnterNodeVisitors(NodeInterface $node): NodeInterface
@@ -101,6 +115,12 @@ class NodeTraverser
         array_map(function (NodeInterface $child) use (&$node): void {
             $newChild = $this->traverseNode($child);
 
+            if (NodeVisitorAction::RemoveNode === $newChild) {
+                $node->removeNode($child);
+
+                return;
+            }
+
             if (get_class($newChild) !== get_class($child)) {
                 $node->removeNode($child);
             }
@@ -116,17 +136,20 @@ class NodeTraverser
                 return;
             }
 
-            $attribute = $this->traverseChildren($attribute);
-            $attribute = array_merge($attribute);
+            $traversed = $this->traverseChildren($attribute);
 
-            $node->setAttribute($key, $attribute);
+            if ($traversed === $attribute) {
+                return;
+            }
+
+            $node->setAttribute($key, $traversed);
         });
     }
 
-    private function runLeaveNodeVisitors(NodeInterface $node): NodeInterface|bool
+    private function runLeaveNodeVisitors(NodeInterface $node): NodeInterface|NodeVisitorAction
     {
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
-            if (self::REMOVE_NODE === $node) {
+            if (NodeVisitorAction::RemoveNode === $node) {
                 return;
             }
 

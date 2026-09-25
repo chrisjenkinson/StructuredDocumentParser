@@ -8,6 +8,7 @@ use chrisjenkinson\StructuredDocumentParser\Node\AbstractNode;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use chrisjenkinson\StructuredDocumentParser\NodeTraverser\NodeTraverser;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\AbstractNodeVisitor;
+use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorAction;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -52,6 +53,144 @@ class NodeTraverserTest extends TestCase
         $node = $traverser->traverse($node);
 
         Assert::assertEquals('replacement', $node->getNode('ChildNode')->getNode('GrandchildNode')->getAttribute('testAttribute'));
+    }
+
+    public function testItRemovesAChildNode(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+
+        $node->addNode(new ChildNode());
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertFalse($node->hasNode('ChildNode'));
+    }
+
+    public function testItRemovesAChildNodeWhenAVisitorReturnsTheRemoveNodeAction(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+
+        $node->addNode(new ChildNode());
+
+        $traverser->addVisitor(new RemoveChildNodeWithActionVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertFalse($node->hasNode('ChildNode'));
+    }
+
+    public function testTheRemoveNodeConstantIsTheRemoveNodeAction(): void
+    {
+        Assert::assertSame(NodeVisitorAction::RemoveNode, NodeTraverser::REMOVE_NODE);
+    }
+
+    public function testItRemovesTheRootNodeWithoutCallingAfterTraverse(): void
+    {
+        $traverser = new NodeTraverser();
+        $visitor   = new RecordAfterTraverseVisitor();
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+        $traverser->addVisitor($visitor);
+
+        Assert::assertNull($traverser->traverse(new ChildNode()));
+        Assert::assertFalse($visitor->afterTraverseCalled);
+    }
+
+    public function testItPreservesKeysOfArrayAttributesWithoutNodes(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+
+        $node->setAttribute('values', [5 => 'five', 9 => 'nine']);
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame([5 => 'five', 9 => 'nine'], $node->getAttribute('values'));
+    }
+
+    public function testItPreservesKeysWhenRemovingANodeFromAKeyedArrayAttribute(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+        $keep      = new GrandchildNode();
+
+        $node->setAttribute('children', ['first' => new ChildNode(), 'second' => $keep]);
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame(['second' => $keep], $node->getAttribute('children'));
+    }
+
+    public function testItReindexesAListAttributeWhenRemovingANode(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+        $keep      = new GrandchildNode();
+
+        $node->setAttribute('children', [new ChildNode(), $keep]);
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame([$keep], $node->getAttribute('children'));
+    }
+
+    public function testItVisitsNodesInNestedArrayAttributes(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+        $keep      = new GrandchildNode();
+
+        $node->setAttribute('children', ['group' => [new ChildNode(), $keep]]);
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame(['group' => [$keep]], $node->getAttribute('children'));
+    }
+}
+
+class RecordAfterTraverseVisitor extends AbstractNodeVisitor
+{
+    public bool $afterTraverseCalled = false;
+
+    public function afterTraverse(NodeInterface $node): ?NodeInterface
+    {
+        $this->afterTraverseCalled = true;
+
+        return null;
+    }
+}
+
+class RemoveChildNodeVisitor extends AbstractNodeVisitor
+{
+    public function leaveNode(NodeInterface $node)
+    {
+        if (!$node instanceof ChildNode) {
+            return null;
+        }
+
+        return NodeTraverser::REMOVE_NODE;
+    }
+}
+
+class RemoveChildNodeWithActionVisitor extends AbstractNodeVisitor
+{
+    public function leaveNode(NodeInterface $node)
+    {
+        if (!$node instanceof ChildNode) {
+            return null;
+        }
+
+        return NodeVisitorAction::RemoveNode;
     }
 }
 
