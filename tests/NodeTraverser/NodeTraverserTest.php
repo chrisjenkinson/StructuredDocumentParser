@@ -8,6 +8,7 @@ use chrisjenkinson\StructuredDocumentParser\Node\AbstractNode;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
 use chrisjenkinson\StructuredDocumentParser\NodeTraverser\NodeTraverser;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\AbstractNodeVisitor;
+use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorAction;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -68,6 +69,25 @@ class NodeTraverserTest extends TestCase
         Assert::assertFalse($node->hasNode('ChildNode'));
     }
 
+    public function testItRemovesAChildNodeWhenAVisitorReturnsTheRemoveNodeAction(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+
+        $node->addNode(new ChildNode());
+
+        $traverser->addVisitor(new RemoveChildNodeWithActionVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertFalse($node->hasNode('ChildNode'));
+    }
+
+    public function testTheRemoveNodeConstantIsTheRemoveNodeAction(): void
+    {
+        Assert::assertSame(NodeVisitorAction::RemoveNode, NodeTraverser::REMOVE_NODE);
+    }
+
     public function testItRemovesTheRootNodeWithoutCallingAfterTraverse(): void
     {
         $traverser = new NodeTraverser();
@@ -76,7 +96,7 @@ class NodeTraverserTest extends TestCase
         $traverser->addVisitor(new RemoveChildNodeVisitor());
         $traverser->addVisitor($visitor);
 
-        Assert::assertSame(NodeTraverser::REMOVE_NODE, $traverser->traverse(new ChildNode()));
+        Assert::assertNull($traverser->traverse(new ChildNode()));
         Assert::assertFalse($visitor->afterTraverseCalled);
     }
 
@@ -159,6 +179,18 @@ class RemoveChildNodeVisitor extends AbstractNodeVisitor
         }
 
         return NodeTraverser::REMOVE_NODE;
+    }
+}
+
+class RemoveChildNodeWithActionVisitor extends AbstractNodeVisitor
+{
+    public function leaveNode(NodeInterface $node)
+    {
+        if (!$node instanceof ChildNode) {
+            return null;
+        }
+
+        return NodeVisitorAction::RemoveNode;
     }
 }
 

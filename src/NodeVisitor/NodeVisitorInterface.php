@@ -17,7 +17,7 @@ interface NodeVisitorInterface
     /**
      * @param NodeInterface $node
      *
-     * @return NodeInterface|bool|null
+     * @return NodeInterface|NodeVisitorAction|null
      */
     public function leaveNode(NodeInterface $node);
 }
