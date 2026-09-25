@@ -37,8 +37,6 @@ abstract class AbstractState implements StateInterface
         $matchedText = $matchedText[0];
         $callback    = $callbacks[0];
 
-        $this->guardAgainstInvalidMatchedText($matcher, $matchedText);
-
         if (is_callable($callback)) {
             $callback($lexer);
         }
@@ -55,7 +53,7 @@ abstract class AbstractState implements StateInterface
         return $matcherName;
     }
 
-    private function guardAgainstInvalidMatchedText(string $matcherName, MatchedText $matchedText): void
+    private function guardAgainstInvalidMatchedText(string $matcherName, MatchedText $matchedText, string $text): void
     {
         $matches = $matchedText->getAll();
 
@@ -65,6 +63,10 @@ abstract class AbstractState implements StateInterface
 
         if (!is_string($matches['all'])) {
             throw new InvalidMatchedTextException($matcherName, 'its "all" value is not a string');
+        }
+
+        if (!str_starts_with($text, $matches['all'])) {
+            throw new InvalidMatchedTextException($matcherName, 'its "all" value is not at the start of the text');
         }
     }
 
@@ -90,6 +92,8 @@ abstract class AbstractState implements StateInterface
             $callback = $matcherAndCallback['callback'];
 
             if ($matches = $matcher->match($text)) {
+                $this->guardAgainstInvalidMatchedText($matcher->getName(), $matches, $text);
+
                 $matchedTokens[]  = $matches;
                 $calledMatchers[] = $matcher->getName();
                 $callbacks[]      = $callback;
