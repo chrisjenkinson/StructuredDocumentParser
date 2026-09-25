@@ -63,25 +63,31 @@ class NodeTraverser
 
     public function traverseChildren(array $children): array
     {
-        $keysToRemove = [];
+        $isList = array_is_list($children);
 
-        array_walk($children, function ($child, $key) use (&$keysToRemove, &$children): void {
+        foreach ($children as $key => $child) {
+            if (is_array($child)) {
+                $children[$key] = $this->traverseChildren($child);
+
+                continue;
+            }
+
             if (!$child instanceof NodeInterface) {
-                return;
+                continue;
             }
 
             $child = $this->traverseNode($child);
 
             if (self::REMOVE_NODE === $child) {
-                $keysToRemove[$key] = $key;
+                unset($children[$key]);
+
+                continue;
             }
 
-            if (null !== $child) {
-                $children[$key] = $child;
-            }
-        });
+            $children[$key] = $child;
+        }
 
-        return array_diff_key($children, $keysToRemove);
+        return $isList ? array_values($children) : $children;
     }
 
     private function runEnterNodeVisitors(NodeInterface $node): NodeInterface
@@ -126,10 +132,13 @@ class NodeTraverser
                 return;
             }
 
-            $attribute = $this->traverseChildren($attribute);
-            $attribute = array_merge($attribute);
+            $traversed = $this->traverseChildren($attribute);
 
-            $node->setAttribute($key, $attribute);
+            if ($traversed === $attribute) {
+                return;
+            }
+
+            $node->setAttribute($key, $traversed);
         });
     }
 

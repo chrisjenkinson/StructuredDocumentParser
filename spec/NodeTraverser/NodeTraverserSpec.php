@@ -78,7 +78,7 @@ class NodeTraverserSpec extends ObjectBehavior
         $this->addVisitor($nodeVisitor);
         $this->addVisitor($nodeVisitor2);
 
-        $node->setAttribute('attr', ['something' => true])->shouldBeCalled();
+        $node->setAttribute('attr', ['something' => true])->shouldNotBeCalled();
 
         $this->traverse($node)->shouldReturn($node);
     }

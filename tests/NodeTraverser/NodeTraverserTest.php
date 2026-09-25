@@ -79,6 +79,63 @@ class NodeTraverserTest extends TestCase
         Assert::assertSame(NodeTraverser::REMOVE_NODE, $traverser->traverse(new ChildNode()));
         Assert::assertFalse($visitor->afterTraverseCalled);
     }
+
+    public function testItPreservesKeysOfArrayAttributesWithoutNodes(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+
+        $node->setAttribute('values', [5 => 'five', 9 => 'nine']);
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame([5 => 'five', 9 => 'nine'], $node->getAttribute('values'));
+    }
+
+    public function testItPreservesKeysWhenRemovingANodeFromAKeyedArrayAttribute(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+        $keep      = new GrandchildNode();
+
+        $node->setAttribute('children', ['first' => new ChildNode(), 'second' => $keep]);
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame(['second' => $keep], $node->getAttribute('children'));
+    }
+
+    public function testItReindexesAListAttributeWhenRemovingANode(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+        $keep      = new GrandchildNode();
+
+        $node->setAttribute('children', [new ChildNode(), $keep]);
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame([$keep], $node->getAttribute('children'));
+    }
+
+    public function testItVisitsNodesInNestedArrayAttributes(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+        $keep      = new GrandchildNode();
+
+        $node->setAttribute('children', ['group' => [new ChildNode(), $keep]]);
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertSame(['group' => [$keep]], $node->getAttribute('children'));
+    }
 }
 
 class RecordAfterTraverseVisitor extends AbstractNodeVisitor
