@@ -64,12 +64,7 @@ class Token implements TokenInterface
         return $this->type;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getValue(string $key)
+    public function getValue(string $key): mixed
     {
         if (!array_key_exists($key, $this->value)) {
             throw new RuntimeException(sprintf('No such key %s exists', $key));

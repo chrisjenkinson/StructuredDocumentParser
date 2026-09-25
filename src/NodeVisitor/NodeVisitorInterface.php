@@ -14,10 +14,5 @@ interface NodeVisitorInterface
 
     public function enterNode(NodeInterface $node): ?NodeInterface;
 
-    /**
-     * @param NodeInterface $node
-     *
-     * @return NodeInterface|NodeVisitorAction|null
-     */
-    public function leaveNode(NodeInterface $node);
+    public function leaveNode(NodeInterface $node): NodeInterface|NodeVisitorAction|null;
 }

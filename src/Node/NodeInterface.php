@@ -12,19 +12,14 @@ interface NodeInterface extends JsonSerializable
 
     public function getName(): string;
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getAttribute(string $key);
+    public function getAttribute(string $key): mixed;
 
     /**
-     * @return mixed
+     * @return array<string, mixed>
      */
-    public function getAttributes();
+    public function getAttributes(): array;
 
-    public function setAttribute(string $key, $value): void;
+    public function setAttribute(string $key, mixed $value): void;
 
     public function hasNode(string $key): bool;
 
@@ -39,5 +34,5 @@ interface NodeInterface extends JsonSerializable
 
     public function replaceNode(NodeInterface $node): void;
 
-    public function removeNode(NodeInterface $node);
+    public function removeNode(NodeInterface $node): void;
 }
