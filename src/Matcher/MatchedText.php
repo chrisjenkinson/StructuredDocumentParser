@@ -14,8 +14,6 @@ class MatchedText
     }
 
     /**
-     * @param string $key
-     *
      * @return mixed|null
      */
     public function get(string $key)

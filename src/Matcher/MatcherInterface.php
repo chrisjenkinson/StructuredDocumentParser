@@ -15,8 +15,5 @@ interface MatcherInterface
      */
     public function match(string $text): ?MatchedText;
 
-    /**
-     * @return string
-     */
     public function getName(): string;
 }

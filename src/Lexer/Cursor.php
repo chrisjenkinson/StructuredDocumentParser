@@ -42,7 +42,7 @@ class Cursor
         $newlines = mb_substr_count($consumed, "\n");
 
         if (0 < $newlines) {
-            $this->line  += $newlines;
+            $this->line += $newlines;
             $this->column = mb_strlen($consumed) - mb_strrpos($consumed, "\n");
         } else {
             $this->column += mb_strlen($consumed);

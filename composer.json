@@ -32,7 +32,8 @@
     "test": [
       "vendor/bin/phpspec run",
       "vendor/bin/phpunit tests/",
-      "vendor/bin/phpstan analyse"
+      "vendor/bin/phpstan analyse",
+      "@cs"
       ],
     "cs": "vendor/bin/php-cs-fixer fix --dry-run --diff",
     "cs-fix": "vendor/bin/php-cs-fixer fix"

@@ -27,7 +27,7 @@ class NodeTraverser
      */
     public function traverse(NodeInterface $node): ?NodeInterface
     {
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
+        array_map(static function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $before = $nodeVisitor->beforeTraverse($node)) {
                 return;
             }
@@ -40,7 +40,7 @@ class NodeTraverser
             return null;
         }
 
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
+        array_map(static function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $after = $nodeVisitor->afterTraverse($node)) {
                 return;
             }
@@ -96,7 +96,7 @@ class NodeTraverser
 
     private function runEnterNodeVisitors(NodeInterface $node): NodeInterface
     {
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
+        array_map(static function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $enter = $nodeVisitor->enterNode($node)) {
                 return;
             }
@@ -107,7 +107,6 @@ class NodeTraverser
     }
 
     /**
-     * @param NodeInterface   $node
      * @param NodeInterface[] $children
      */
     private function runTraverseNodeOnSubNodes(NodeInterface $node, array $children): void
@@ -151,7 +150,7 @@ class NodeTraverser
 
     private function runLeaveNodeVisitors(NodeInterface $node): NodeInterface|NodeVisitorAction
     {
-        array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
+        array_map(static function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (NodeVisitorAction::RemoveNode === $node) {
                 return;
             }

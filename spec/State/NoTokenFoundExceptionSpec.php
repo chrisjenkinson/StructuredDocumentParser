@@ -49,7 +49,7 @@ class NoTokenFoundExceptionSpec extends ObjectBehavior
     {
         $this->beConstructedWith('stateName', 50, str_repeat('é', 150), new TokenPosition(12, 5));
 
-        $this->getMessage()->shouldReturn('No token found with state stateName at line 12, column 5: "'.str_repeat('é', 100).'…"');
+        $this->getMessage()->shouldReturn('No token found with state stateName at line 12, column 5: "' . str_repeat('é', 100) . '…"');
     }
 
     public function it_shows_a_newline_when_the_text_starts_with_one(): void
