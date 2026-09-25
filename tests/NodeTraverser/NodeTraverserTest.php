@@ -53,6 +53,32 @@ class NodeTraverserTest extends TestCase
 
         Assert::assertEquals('replacement', $node->getNode('ChildNode')->getNode('GrandchildNode')->getAttribute('testAttribute'));
     }
+
+    public function testItRemovesAChildNode(): void
+    {
+        $traverser = new NodeTraverser();
+        $node      = new OriginalNode();
+
+        $node->addNode(new ChildNode());
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+
+        $node = $traverser->traverse($node);
+
+        Assert::assertFalse($node->hasNode('ChildNode'));
+    }
+}
+
+class RemoveChildNodeVisitor extends AbstractNodeVisitor
+{
+    public function leaveNode(NodeInterface $node)
+    {
+        if (!$node instanceof ChildNode) {
+            return null;
+        }
+
+        return NodeTraverser::REMOVE_NODE;
+    }
 }
 
 class TestNodeVisitor extends AbstractNodeVisitor

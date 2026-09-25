@@ -101,6 +101,12 @@ class NodeTraverser
         array_map(function (NodeInterface $child) use (&$node): void {
             $newChild = $this->traverseNode($child);
 
+            if (self::REMOVE_NODE === $newChild) {
+                $node->removeNode($child);
+
+                return;
+            }
+
             if (get_class($newChild) !== get_class($child)) {
                 $node->removeNode($child);
             }
