@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace chrisjenkinson\StructuredDocumentParser\Lexer;
 
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
+use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 
 class Lexer
@@ -21,12 +22,16 @@ class Lexer
         $this->state = $initialState;
     }
 
-    public function tokenise(string $text): TokenStream
+    /**
+     * Pass $start when $text comes from a larger document, such as a paragraph lexed
+     * again for inline syntax, so token positions refer to that document.
+     */
+    public function tokenise(string $text, ?TokenPosition $start = null): TokenStream
     {
         $this->reset();
 
         try {
-            return $this->tokeniseFromInitialState($text);
+            return $this->tokeniseFromInitialState($text, $start ?? new TokenPosition(1, 1));
         } finally {
             $this->reset();
         }
@@ -73,10 +78,10 @@ class Lexer
         array_pop($this->previousStates);
     }
 
-    private function tokeniseFromInitialState(string $text): TokenStream
+    private function tokeniseFromInitialState(string $text, TokenPosition $start): TokenStream
     {
         $tokens = new TokenStream();
-        $cursor = new Cursor($text);
+        $cursor = new Cursor($text, $start->getLine(), $start->getColumn());
 
         $statesAtPosition = [];
 

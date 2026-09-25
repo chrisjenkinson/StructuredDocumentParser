@@ -16,6 +16,7 @@ use chrisjenkinson\StructuredDocumentParser\State\NoTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\State\StateInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
+use PhpSpec\Exception\Example\FailureException;
 use PhpSpec\ObjectBehavior;
 
 class LexerSpec extends ObjectBehavior
@@ -161,6 +162,38 @@ class LexerSpec extends ObjectBehavior
 
         $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(1, 1));
         $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(2, 1));
+    }
+
+    public function it_can_start_from_a_given_position(): void
+    {
+        $state = new InitialState();
+        $state->registerMatcher(new LexerSpecRegexMatcher('Line', '/(?<all>[^\n]*\n|[^\n]+)/A'));
+
+        $this->beConstructedWith($state);
+
+        $tokens = $this->tokenise("ab\ncd", new TokenPosition(10, 5));
+
+        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(10, 5));
+        $tokens->consumeToken()->getPosition()->shouldBeLike(new TokenPosition(11, 1));
+    }
+
+    public function it_reports_errors_relative_to_the_given_position(): void
+    {
+        $state = new InitialState();
+
+        $this->beConstructedWith($state);
+
+        try {
+            $this->getWrappedObject()->tokenise('ab', new TokenPosition(10, 5));
+        } catch (NoTokenFoundException $exception) {
+            if (10 !== $exception->getPosition()->getLine() || 5 !== $exception->getPosition()->getColumn()) {
+                throw new FailureException('Expected the error at line 10, column 5.');
+            }
+
+            return;
+        }
+
+        throw new FailureException('Expected a NoTokenFoundException.');
     }
 
     public function it_switches_state_on_a_zero_length_lookahead_match(): void
