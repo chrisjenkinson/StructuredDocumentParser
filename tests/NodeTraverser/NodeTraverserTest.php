@@ -67,6 +67,30 @@ class NodeTraverserTest extends TestCase
 
         Assert::assertFalse($node->hasNode('ChildNode'));
     }
+
+    public function testItRemovesTheRootNodeWithoutCallingAfterTraverse(): void
+    {
+        $traverser = new NodeTraverser();
+        $visitor   = new RecordAfterTraverseVisitor();
+
+        $traverser->addVisitor(new RemoveChildNodeVisitor());
+        $traverser->addVisitor($visitor);
+
+        Assert::assertSame(NodeTraverser::REMOVE_NODE, $traverser->traverse(new ChildNode()));
+        Assert::assertFalse($visitor->afterTraverseCalled);
+    }
+}
+
+class RecordAfterTraverseVisitor extends AbstractNodeVisitor
+{
+    public bool $afterTraverseCalled = false;
+
+    public function afterTraverse(NodeInterface $node): ?NodeInterface
+    {
+        $this->afterTraverseCalled = true;
+
+        return null;
+    }
 }
 
 class RemoveChildNodeVisitor extends AbstractNodeVisitor

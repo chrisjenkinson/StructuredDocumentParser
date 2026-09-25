@@ -32,6 +32,10 @@ class NodeTraverser
 
         $node = $this->traverseNode($node);
 
+        if (self::REMOVE_NODE === $node) {
+            return $node;
+        }
+
         array_map(function (NodeVisitorInterface $nodeVisitor) use (&$node): void {
             if (null === $after = $nodeVisitor->afterTraverse($node)) {
                 return;
