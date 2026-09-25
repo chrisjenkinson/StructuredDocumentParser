@@ -4,10 +4,9 @@
   "type": "library",
   "require": {
     "php": "8.2.* || 8.3.* || 8.4.* || 8.5.*",
-    "ext-libxml": "*"
+    "ext-mbstring": "*"
   },
   "require-dev": {
-    "ext-mbstring": "*",
     "phpspec/phpspec": "8.3.1",
     "phpunit/phpunit": "9.6.* || 10.5.*",
     "friends-of-phpspec/phpspec-code-coverage": "7.0.0",
