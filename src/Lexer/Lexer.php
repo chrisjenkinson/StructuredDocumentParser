@@ -12,6 +12,11 @@ class Lexer
     /**
      * @var StateInterface
      */
+    private $initialState;
+
+    /**
+     * @var StateInterface
+     */
     private $state;
 
     /**
@@ -21,23 +26,19 @@ class Lexer
 
     public function __construct(StateInterface $initialState)
     {
-        $this->state = $initialState;
+        $this->initialState = $initialState;
+        $this->state        = $initialState;
     }
 
     public function tokenise(string $text): TokenStream
     {
-        $tokens = new TokenStream();
-        $cursor = new Cursor($text);
+        $this->reset();
 
-        while (!$cursor->isEndOfText()) {
-            $token = $this->getState()->findMatchingToken($this, $cursor);
-
-            $tokens->add($token);
-
-            $cursor->advance(mb_strlen($token->getValue('all')));
+        try {
+            return $this->tokeniseFromInitialState($text);
+        } finally {
+            $this->reset();
         }
-
-        return $tokens;
     }
 
     public function getState(): StateInterface
@@ -45,6 +46,12 @@ class Lexer
         return $this->state;
     }
 
+    /**
+     * Switches to the given state, recording the current one so popState() can return to it.
+     *
+     * States are compared by identity when detecting zero-length token loops, so reuse
+     * state instances rather than creating new ones on each switch.
+     */
     public function setState(StateInterface $state): void
     {
         $this->previousStates[] = $this->state;
@@ -53,6 +60,54 @@ class Lexer
 
     public function getLastState(): StateInterface
     {
+        if ([] === $this->previousStates) {
+            throw new NoPreviousStateException();
+        }
+
         return end($this->previousStates);
+    }
+
+    public function popState(): void
+    {
+        $this->state = $this->getLastState();
+
+        array_pop($this->previousStates);
+    }
+
+    private function tokeniseFromInitialState(string $text): TokenStream
+    {
+        $tokens = new TokenStream();
+        $cursor = new Cursor($text);
+
+        $statesAtPosition = [];
+
+        while (!$cursor->isEndOfText()) {
+            $state = $this->getState();
+
+            if (in_array($state, $statesAtPosition, true)) {
+                throw new ZeroLengthTokenLoopException($state->getName(), $cursor->getCurrentPosition());
+            }
+
+            $statesAtPosition[] = $state;
+
+            $token = $state->findMatchingToken($this, $cursor);
+
+            $tokens->add($token);
+
+            $length = mb_strlen($token->getValue('all'));
+
+            if (0 < $length) {
+                $cursor->advance($length);
+                $statesAtPosition = [];
+            }
+        }
+
+        return $tokens;
+    }
+
+    private function reset(): void
+    {
+        $this->state          = $this->initialState;
+        $this->previousStates = [];
     }
 }

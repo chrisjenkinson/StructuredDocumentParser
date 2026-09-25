@@ -66,6 +66,36 @@ class InitialStateSpec extends ObjectBehavior
         $this->findMatchingToken($lexer, $cursor)->shouldReturnAnInstanceOf(TokenInterface::class);
     }
 
+    public function it_strips_the_matcher_suffix_from_the_token_type(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText): void
+    {
+        $cursor->getRemainingText()->willReturn('remainingText');
+        $cursor->getCurrentPosition()->willReturn(0);
+
+        $this->registerMatcher($matcher);
+
+        $matcher->match('remainingText')->willReturn($matchedText);
+        $matcher->getName()->willReturn('HeadingMatcher');
+
+        $matchedText->getAll()->willReturn(['all' => 'remainingText']);
+
+        $this->findMatchingToken($lexer, $cursor)->getType()->shouldReturn('Heading');
+    }
+
+    public function it_uses_the_whole_matcher_name_as_the_token_type_without_a_matcher_suffix(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText): void
+    {
+        $cursor->getRemainingText()->willReturn('remainingText');
+        $cursor->getCurrentPosition()->willReturn(0);
+
+        $this->registerMatcher($matcher);
+
+        $matcher->match('remainingText')->willReturn($matchedText);
+        $matcher->getName()->willReturn('Heading');
+
+        $matchedText->getAll()->willReturn(['all' => 'remainingText']);
+
+        $this->findMatchingToken($lexer, $cursor)->getType()->shouldReturn('Heading');
+    }
+
     public function it_calls_a_callback(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText): void
     {
         $cursor->getRemainingText()->willReturn('remainingText');
