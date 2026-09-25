@@ -44,6 +44,11 @@ abstract class AbstractState implements StateInterface
         );
     }
 
+    public function getName(): string
+    {
+        return (new ReflectionClass($this))->getShortName();
+    }
+
     private function getTokenType(string $matcherName): string
     {
         if (str_ends_with($matcherName, 'Matcher')) {
@@ -79,8 +84,8 @@ abstract class AbstractState implements StateInterface
             throw new AmbiguousTokenFoundException(
                 $this->getName(),
                 $remainingText,
-                array_map(fn (MatcherMatch $match): string => $match->matcherName, $matches),
-                array_map(fn (MatcherMatch $match): MatchedText => $match->matchedText, $matches),
+                array_map(static fn (MatcherMatch $match): string => $match->matcherName, $matches),
+                array_map(static fn (MatcherMatch $match): MatchedText => $match->matchedText, $matches),
                 $position
             );
         }
@@ -116,10 +121,5 @@ abstract class AbstractState implements StateInterface
         }
 
         return $matches;
-    }
-
-    public function getName(): string
-    {
-        return (new ReflectionClass($this))->getShortName();
     }
 }

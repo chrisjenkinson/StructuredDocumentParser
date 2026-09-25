@@ -192,7 +192,7 @@ class InitialStateSpec extends ObjectBehavior
 
         $lexer->getState()->shouldBeCalled();
 
-        $this->registerMatcher($matcher, function (Lexer $lexer): void {
+        $this->registerMatcher($matcher, static function (Lexer $lexer): void {
             $lexer->getState();
         });
 

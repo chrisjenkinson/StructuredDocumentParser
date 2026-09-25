@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace spec\chrisjenkinson\StructuredDocumentParser\NodeTraverser;
 
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
-use chrisjenkinson\StructuredDocumentParser\NodeTraverser\NodeTraverser;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorAction;
 use chrisjenkinson\StructuredDocumentParser\NodeVisitor\NodeVisitorInterface;
 use PhpSpec\ObjectBehavior;

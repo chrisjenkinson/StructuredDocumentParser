@@ -51,8 +51,6 @@ class TokenStream implements Countable
     }
 
     /**
-     * @param string $expectedType
-     *
      * @return true
      */
     public function expectTokenType(string $expectedType): bool
@@ -85,9 +83,7 @@ class TokenStream implements Countable
 
         $currentToken = $this->getCurrentToken();
 
-        $expected = array_filter($expectedTypes, function ($expectedType) use ($currentToken) {
-            return $expectedType === $currentToken->getType();
-        });
+        $expected = array_filter($expectedTypes, static fn ($expectedType) => $expectedType === $currentToken->getType());
 
         if (count($expected) >= 1) {
             return true;
