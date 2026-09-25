@@ -10,14 +10,16 @@ class Cursor
 
     private readonly int $textLength;
 
-    private int $line = 1;
-
-    private int $column = 1;
-
     private int $byteOffset = 0;
 
-    public function __construct(private readonly string $text)
-    {
+    /**
+     * $line and $column give the position of the start of $text, for text taken from a larger document.
+     */
+    public function __construct(
+        private readonly string $text,
+        private int $line = 1,
+        private int $column = 1,
+    ) {
         $this->textLength = mb_strlen($text);
     }
 

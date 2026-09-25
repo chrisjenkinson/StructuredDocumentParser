@@ -99,4 +99,21 @@ class CursorSpec extends ObjectBehavior
 
         $this->isEndOfText()->shouldReturn(true);
     }
+
+    public function it_can_start_at_a_given_line_and_column(): void
+    {
+        $this->beConstructedWith("ab\ncd", 10, 5);
+
+        $this->getLine()->shouldReturn(10);
+        $this->getColumn()->shouldReturn(5);
+
+        $this->advance(1);
+
+        $this->getColumn()->shouldReturn(6);
+
+        $this->advance(3);
+
+        $this->getLine()->shouldReturn(11);
+        $this->getColumn()->shouldReturn(2);
+    }
 }
