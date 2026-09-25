@@ -13,17 +13,8 @@ PHP 8.2 or later with the `mbstring` extension.
 
 ## Installation
 
-The package isn't on Packagist yet, so add the repository to your `composer.json`:
-
-```json
-{
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/chrisjenkinson/StructuredDocumentParser" }
-    ],
-    "require": {
-        "chrisjenkinson/structured-document-parser": "dev-master"
-    }
-}
+```sh
+composer require chrisjenkinson/structured-document-parser
 ```
 
 ## Usage
