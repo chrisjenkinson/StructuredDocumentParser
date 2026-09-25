@@ -48,6 +48,44 @@ class CursorSpec extends ObjectBehavior
         $this->getRemainingText()->shouldReturn('');
     }
 
+    public function it_starts_at_line_one_column_one(): void
+    {
+        $this->getLine()->shouldReturn(1);
+        $this->getColumn()->shouldReturn(1);
+    }
+
+    public function it_tracks_the_column_within_a_line(): void
+    {
+        $this->advance(5);
+
+        $this->getLine()->shouldReturn(1);
+        $this->getColumn()->shouldReturn(6);
+    }
+
+    public function it_tracks_the_line_and_column_across_newlines(): void
+    {
+        $this->beConstructedWith("ab\ncd\nefg");
+
+        $this->advance(4);
+
+        $this->getLine()->shouldReturn(2);
+        $this->getColumn()->shouldReturn(2);
+
+        $this->advance(4);
+
+        $this->getLine()->shouldReturn(3);
+        $this->getColumn()->shouldReturn(3);
+    }
+
+    public function it_counts_columns_in_characters(): void
+    {
+        $this->beConstructedWith('éé€x');
+
+        $this->advance(3);
+
+        $this->getColumn()->shouldReturn(4);
+    }
+
     public function it_returns_the_remaining_text_after_advancing_over_multibyte_characters(): void
     {
         $this->beConstructedWith("é€\nxé");

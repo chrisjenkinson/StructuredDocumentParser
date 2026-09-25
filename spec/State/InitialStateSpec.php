@@ -12,6 +12,7 @@ use chrisjenkinson\StructuredDocumentParser\State\AmbiguousTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\State\InvalidMatchedTextException;
 use chrisjenkinson\StructuredDocumentParser\State\NoTokenFoundException;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
+use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use PhpSpec\ObjectBehavior;
 
 class InitialStateSpec extends ObjectBehavior
@@ -25,6 +26,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $matcher1->getName()->willReturn('matcher1');
         $matcher2->getName()->willReturn('matcher2');
@@ -44,6 +47,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher);
 
@@ -56,6 +61,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher);
 
@@ -64,13 +71,18 @@ class InitialStateSpec extends ObjectBehavior
 
         $matchedText->getAll()->willReturn(['all' => 'remainingText']);
 
-        $this->findMatchingToken($lexer, $cursor)->shouldReturnAnInstanceOf(TokenInterface::class);
+        $token = $this->findMatchingToken($lexer, $cursor);
+
+        $token->shouldReturnAnInstanceOf(TokenInterface::class);
+        $token->getPosition()->shouldBeLike(new TokenPosition(4, 2));
     }
 
     public function it_strips_the_matcher_suffix_from_the_token_type(Lexer $lexer, Cursor $cursor, MatcherInterface $matcher, MatchedText $matchedText): void
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher);
 
@@ -86,6 +98,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher);
 
@@ -101,6 +115,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher);
 
@@ -116,6 +132,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher);
 
@@ -131,6 +149,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher);
 
@@ -146,6 +166,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $this->registerMatcher($matcher1);
         $this->registerMatcher($matcher2);
@@ -165,6 +187,8 @@ class InitialStateSpec extends ObjectBehavior
     {
         $cursor->getRemainingText()->willReturn('remainingText');
         $cursor->getCurrentPosition()->willReturn(0);
+        $cursor->getLine()->willReturn(4);
+        $cursor->getColumn()->willReturn(2);
 
         $lexer->getState()->shouldBeCalled();
 

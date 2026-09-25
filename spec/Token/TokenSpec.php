@@ -11,7 +11,7 @@ class TokenSpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith('Something', ['all' => 'value']);
+        $this->beConstructedWith('Something', ['all' => 'value'], new TokenPosition(3, 7));
     }
 
     public function it_has_a_type(): void
@@ -39,11 +39,9 @@ class TokenSpec extends ObjectBehavior
         $this->hasKey('all')->shouldReturn(true);
     }
 
-    public function it_stores_position_information(TokenPosition $position): void
+    public function it_has_a_position(): void
     {
-        $this->setPosition($position);
-
-        $this->getPosition()->shouldBeAnInstanceOf(TokenPosition::class);
+        $this->getPosition()->shouldBeLike(new TokenPosition(3, 7));
     }
 
     public function it_casts_to_a_string(): void

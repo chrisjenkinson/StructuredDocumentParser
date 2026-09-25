@@ -10,6 +10,7 @@ use chrisjenkinson\StructuredDocumentParser\Matcher\MatchedText;
 use chrisjenkinson\StructuredDocumentParser\Matcher\MatcherInterface;
 use chrisjenkinson\StructuredDocumentParser\Token\Token;
 use chrisjenkinson\StructuredDocumentParser\Token\TokenInterface;
+use chrisjenkinson\StructuredDocumentParser\Token\TokenPosition;
 use ReflectionClass;
 
 abstract class AbstractState implements StateInterface
@@ -41,7 +42,11 @@ abstract class AbstractState implements StateInterface
             $callback($lexer);
         }
 
-        return new Token($this->getTokenType($matcher), $matchedText->getAll());
+        return new Token(
+            $this->getTokenType($matcher),
+            $matchedText->getAll(),
+            new TokenPosition($cursor->getLine(), $cursor->getColumn())
+        );
     }
 
     private function getTokenType(string $matcherName): string
