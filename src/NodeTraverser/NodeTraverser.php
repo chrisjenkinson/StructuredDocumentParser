@@ -121,10 +121,13 @@ class NodeTraverser
                 return;
             }
 
-            if (get_class($newChild) !== get_class($child)) {
-                $node->removeNode($child);
+            if ($newChild->getName() === $child->getName()) {
+                $node->replaceNode($newChild);
+
+                return;
             }
 
+            $node->removeNode($child);
             $node->addNode($newChild);
         }, $children);
     }

@@ -49,7 +49,7 @@ abstract class AbstractNode implements NodeInterface
             return $this->nodes[$key];
         }
 
-        throw new RuntimeException(sprintf('No such node "%s"', $key));
+        throw new NodeNotFoundException($key);
     }
 
     /**
@@ -62,6 +62,19 @@ abstract class AbstractNode implements NodeInterface
 
     public function addNode(NodeInterface $node): void
     {
+        if ($this->hasNode($node->getName())) {
+            throw new DuplicateNodeException($node->getName());
+        }
+
+        $this->nodes[$node->getName()] = $node;
+    }
+
+    public function replaceNode(NodeInterface $node): void
+    {
+        if (!$this->hasNode($node->getName())) {
+            throw new NodeNotFoundException($node->getName());
+        }
+
         $this->nodes[$node->getName()] = $node;
     }
 

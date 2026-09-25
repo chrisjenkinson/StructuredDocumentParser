@@ -35,5 +35,7 @@ interface NodeInterface
 
     public function addNode(NodeInterface $node): void;
 
+    public function replaceNode(NodeInterface $node): void;
+
     public function removeNode(NodeInterface $node);
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace spec\chrisjenkinson\StructuredDocumentParser\Node;
 
+use chrisjenkinson\StructuredDocumentParser\Node\DuplicateNodeException;
 use chrisjenkinson\StructuredDocumentParser\Node\NodeInterface;
+use chrisjenkinson\StructuredDocumentParser\Node\NodeNotFoundException;
 use PhpSpec\ObjectBehavior;
 use RuntimeException;
 
@@ -40,7 +42,36 @@ class SimpleNodeSpec extends ObjectBehavior
 
     public function it_throws_exception_if_no_such_child_exists(): void
     {
-        $this->shouldThrow(RuntimeException::class)->duringGetNode('nonexistent');
+        $this->shouldThrow(NodeNotFoundException::class)->duringGetNode('nonexistent');
+    }
+
+    public function it_throws_when_adding_a_node_whose_name_is_already_taken(NodeInterface $node, NodeInterface $other): void
+    {
+        $node->getName()->willReturn('ChildNode');
+        $other->getName()->willReturn('ChildNode');
+
+        $this->addNode($node);
+
+        $this->shouldThrow(DuplicateNodeException::class)->duringAddNode($other);
+        $this->getNode('ChildNode')->shouldReturn($node);
+    }
+
+    public function it_replaces_a_node_with_the_same_name(NodeInterface $node, NodeInterface $replacement): void
+    {
+        $node->getName()->willReturn('ChildNode');
+        $replacement->getName()->willReturn('ChildNode');
+
+        $this->addNode($node);
+        $this->replaceNode($replacement);
+
+        $this->getNodes()->shouldReturn(['ChildNode' => $replacement]);
+    }
+
+    public function it_throws_when_replacing_a_node_that_does_not_exist(NodeInterface $node): void
+    {
+        $node->getName()->willReturn('ChildNode');
+
+        $this->shouldThrow(NodeNotFoundException::class)->duringReplaceNode($node);
     }
 
     public function it_exports_a_tree_as_a_string(NodeInterface $node): void
