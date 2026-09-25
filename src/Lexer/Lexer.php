@@ -52,10 +52,18 @@ class Lexer
      * States are compared by identity when detecting zero-length token loops, so reuse
      * state instances rather than creating new ones on each switch.
      */
-    public function setState(StateInterface $state): void
+    public function pushState(StateInterface $state): void
     {
         $this->previousStates[] = $this->state;
         $this->state            = $state;
+    }
+
+    /**
+     * @deprecated use pushState()
+     */
+    public function setState(StateInterface $state): void
+    {
+        $this->pushState($state);
     }
 
     public function getLastState(): StateInterface

@@ -52,7 +52,7 @@ class LexerSpec extends ObjectBehavior
 
         $this->getState()->shouldReturn($origState);
 
-        $this->setState($newState);
+        $this->pushState($newState);
 
         $this->getState()->shouldReturn($newState);
     }
@@ -67,8 +67,21 @@ class LexerSpec extends ObjectBehavior
 
         $this->beConstructedWith($origState);
 
+        $this->pushState($newState);
+
+        $this->getLastState()->shouldReturn($origState);
+    }
+
+    public function it_keeps_set_state_as_an_alias_for_push_state(): void
+    {
+        $origState = new InitialState();
+        $newState  = new InitialState();
+
+        $this->beConstructedWith($origState);
+
         $this->setState($newState);
 
+        $this->getState()->shouldReturn($newState);
         $this->getLastState()->shouldReturn($origState);
     }
 
@@ -85,8 +98,8 @@ class LexerSpec extends ObjectBehavior
 
         $this->beConstructedWith($firstState);
 
-        $this->setState($secondState);
-        $this->setState($thirdState);
+        $this->pushState($secondState);
+        $this->pushState($thirdState);
 
         $this->popState();
 
@@ -110,7 +123,7 @@ class LexerSpec extends ObjectBehavior
         $newState  = new InitialState();
 
         $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'), function (Lexer $lexer) use ($newState): void {
-            $lexer->setState($newState);
+            $lexer->pushState($newState);
         });
         $newState->registerMatcher(new LexerSpecRegexMatcher('Other', '/(?<all>a)/A'));
 
@@ -126,7 +139,7 @@ class LexerSpec extends ObjectBehavior
         $newState  = new InitialState();
 
         $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'), function (Lexer $lexer) use ($newState): void {
-            $lexer->setState($newState);
+            $lexer->pushState($newState);
         });
 
         $this->beConstructedWith($origState);
@@ -157,7 +170,7 @@ class LexerSpec extends ObjectBehavior
 
         $origState->registerMatcher(new LexerSpecRegexMatcher('Letter', '/(?<all>a)/A'));
         $origState->registerMatcher(new LexerSpecRegexMatcher('Lookahead', '/(?<all>)(?=b)/A'), function (Lexer $lexer) use ($newState): void {
-            $lexer->setState($newState);
+            $lexer->pushState($newState);
         });
         $newState->registerMatcher(new LexerSpecRegexMatcher('Rest', '/(?<all>b+)/A'));
 
@@ -182,10 +195,10 @@ class LexerSpec extends ObjectBehavior
         $secondState = new InitialState();
 
         $firstState->registerMatcher(new LexerSpecRegexMatcher('ToSecond', '/(?<all>)/A'), function (Lexer $lexer) use ($secondState): void {
-            $lexer->setState($secondState);
+            $lexer->pushState($secondState);
         });
         $secondState->registerMatcher(new LexerSpecRegexMatcher('ToFirst', '/(?<all>)/A'), function (Lexer $lexer) use ($firstState): void {
-            $lexer->setState($firstState);
+            $lexer->pushState($firstState);
         });
 
         $this->beConstructedWith($firstState);
