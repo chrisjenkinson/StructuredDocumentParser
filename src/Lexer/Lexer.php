@@ -9,25 +9,16 @@ use chrisjenkinson\StructuredDocumentParser\Token\TokenStream;
 
 class Lexer
 {
-    /**
-     * @var StateInterface
-     */
-    private $initialState;
-
-    /**
-     * @var StateInterface
-     */
-    private $state;
+    private StateInterface $state;
 
     /**
      * @var StateInterface[]
      */
-    private $previousStates = [];
+    private array $previousStates = [];
 
-    public function __construct(StateInterface $initialState)
+    public function __construct(private readonly StateInterface $initialState)
     {
-        $this->initialState = $initialState;
-        $this->state        = $initialState;
+        $this->state = $initialState;
     }
 
     public function tokenise(string $text): TokenStream

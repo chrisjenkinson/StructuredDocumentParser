@@ -8,16 +8,11 @@ use chrisjenkinson\StructuredDocumentParser\Finder\RegexFinder;
 
 class SimpleTextMatcher extends AbstractMatcher
 {
-    /**
-     * @var RegexFinder
-     */
-    private $finder;
+    private readonly RegexFinder $finder;
 
     public function __construct()
     {
-        $pattern = '/(?<all>.+)/As';
-
-        $this->finder = new RegexFinder($pattern);
+        $this->finder = new RegexFinder('/(?<all>.+)/As');
     }
 
     public function match(string $text): ?MatchedText

@@ -10,14 +10,14 @@ use RuntimeException;
 abstract class AbstractNode implements NodeInterface
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
      * @var NodeInterface[]
      */
-    protected $nodes = [];
+    protected array $nodes = [];
 
     public function __toString(): string
     {

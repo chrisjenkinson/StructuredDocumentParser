@@ -7,31 +7,13 @@ namespace chrisjenkinson\StructuredDocumentParser\Token;
 class Token implements TokenInterface
 {
     /**
-     * @var string
+     * @param mixed[] $value
      */
-    private $type;
-
-    /**
-     * @var mixed[]
-     */
-    private $value = [];
-
-    /**
-     * @var TokenPosition
-     */
-    private $position;
-
-    /**
-     * Token constructor.
-     *
-     * @param string $type
-     * @param mixed  $value
-     */
-    public function __construct(string $type, $value, TokenPosition $position)
-    {
-        $this->type     = $type;
-        $this->value    = $value;
-        $this->position = $position;
+    public function __construct(
+        private readonly string $type,
+        private readonly array $value,
+        private readonly TokenPosition $position
+    ) {
     }
 
     public function __toString(): string

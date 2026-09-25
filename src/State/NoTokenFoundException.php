@@ -10,33 +10,14 @@ use Throwable;
 
 class NoTokenFoundException extends RuntimeException
 {
-    /**
-     * @var string
-     */
-    private $stateName;
-
-    /**
-     * @var int
-     */
-    private $currentPosition;
-
-    /**
-     * @var string
-     */
-    private $remainingText;
-
-    /**
-     * @var TokenPosition
-     */
-    private $position;
-
-    public function __construct(string $stateName, int $currentPosition, string $remainingText, TokenPosition $position, int $code = 0, ?Throwable $previous = null)
-    {
-        $this->stateName       = $stateName;
-        $this->currentPosition = $currentPosition;
-        $this->remainingText   = $remainingText;
-        $this->position        = $position;
-
+    public function __construct(
+        private readonly string $stateName,
+        private readonly int $currentPosition,
+        private readonly string $remainingText,
+        private readonly TokenPosition $position,
+        int $code = 0,
+        ?Throwable $previous = null
+    ) {
         $message = sprintf(
             'No token found with state %s at line %d, column %d: %s',
             $stateName,

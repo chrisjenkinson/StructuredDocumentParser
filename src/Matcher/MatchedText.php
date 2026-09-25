@@ -7,13 +7,10 @@ namespace chrisjenkinson\StructuredDocumentParser\Matcher;
 class MatchedText
 {
     /**
-     * @var mixed[]
+     * @param mixed[] $matches
      */
-    private $matches;
-
-    public function __construct(array $matches)
+    public function __construct(private readonly array $matches)
     {
-        $this->matches = $matches;
     }
 
     /**
